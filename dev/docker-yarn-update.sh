@@ -79,5 +79,5 @@ cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/fonts/* /app/src/Pro
 rm /app/src/Promenade.Web/wwwroot/css/ajax-loader.gif
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/ajax-loader.gif /app/src/Promenade.Web/wwwroot/css/
 
-cd /app/src/Ops.Web && echo *** Ops.Web yarn outdated && yarn outdated
-cd /app/src/Promenade.Web && echo *** Promenade.Web yarn outdated && yarn outdated
+cd /app/src/Ops.Web && echo --- Ops.Web yarn outdated && yarn outdated
+cd /app/src/Promenade.Web && echo --- Promenade.Web yarn outdated && yarn outdated
