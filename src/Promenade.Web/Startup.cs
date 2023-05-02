@@ -355,9 +355,9 @@ namespace Ocuda.Promenade.Web
                     "js/bootstrap.min.js").UseContentRoot();
 
                 // minifying Bootstrap seems to upset this tool, bring it in pre-minified
-                _.AddCssBundle("/js/bootstrap.min.css",
+                _.AddCssBundle("/css/bootstrap.min.css",
                     new NUglify.Css.CssSettings { MinifyExpressions = false },
-                    "js/bootstrap.min.css").UseContentRoot();
+                    "css/bootstrap.min.css").UseContentRoot();
 
                 _.AddCssBundle("/css/styles.min.css",
                     "css/all.css",
