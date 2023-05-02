@@ -7,7 +7,6 @@
 # 5. See what happened with git status
 
 # Ops
-
 cd /app/src/Ops.Web && yarn install
 
 mkdir -p /app/src/Ops.Web/js
@@ -23,6 +22,7 @@ cp /app/src/Ops.Web/node_modules/commonmark/dist/commonmark.js /app/src/Ops.Web/
 cp /app/src/Ops.Web/node_modules/fontawesome-iconpicker/dist/js/fontawesome-iconpicker.js /app/src/Ops.Web/js
 cp /app/src/Ops.Web/node_modules/smartcrop/smartcrop.js /app/src/Ops.Web/js
 cp /app/src/Ops.Web/node_modules/cropperjs/dist/cropper.js /app/src/Ops.Web/js
+cp /app/src/Ops.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/src/Ops.Web/js
 
 mkdir -p /app/src/Ops.Web/css
 rm -rf /app/src/Ops.Web/css/*.css
@@ -57,6 +57,7 @@ cp /app/src/Promenade.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/P
 cp /app/src/Promenade.Web/node_modules/jquery-validation/dist/jquery.validate.js /app/src/Promenade.Web/js
 cp /app/src/Promenade.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js /app/src/Promenade.Web/js
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/slick.js /app/src/Promenade.Web/js
+cp /app/src/Promenade.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/src/Promenade.Web/js
 
 mkdir -p /app/src/Promenade.Web/css
 rm -rf /app/src/Promenade.Web/css/*.css
@@ -78,4 +79,5 @@ cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/fonts/* /app/src/Pro
 rm /app/src/Promenade.Web/wwwroot/css/ajax-loader.gif
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/ajax-loader.gif /app/src/Promenade.Web/wwwroot/css/
 
-yarn outdated && cd /app && git status
+cd /app/src/Ops.Web && echo *** Ops.Web yarn outdated && yarn outdated
+cd /app/src/Promenade.Web && echo *** Promenade.Web yarn outdated && yarn outdated
