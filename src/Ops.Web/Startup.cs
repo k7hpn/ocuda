@@ -99,6 +99,8 @@ namespace Ocuda.Ops.Web
             // use the culture configured above in services
             app.UseRequestLocalization();
 
+            app.UseWebOptimizer();
+
             app.UseStaticFiles();
 
             // configure shared content directory
@@ -257,6 +259,64 @@ namespace Ocuda.Ops.Web
                     })
                     .AddSessionStateTempDataProvider();
             }
+
+            services.AddWebOptimizer(_ =>
+            {
+                _.AddFiles("text/javascript", "/js/*");
+                _.AddFiles("text/css", "/css/*");
+
+                _.AddJavaScriptBundle("/js/main.min.js",
+                    "js/jquery.js",
+                    "js/popper.js",
+                    "js/bootstrap.js",
+                    "js/jquery.validate.js",
+                    "js/jquery.validate.unobtrusive.js",
+                    "js/slick.js",
+                    "js/slugify.js",
+                    "Scripts/Layout.js",
+                    "Scripts/ops.js"
+                    ).UseContentRoot();
+
+                _.AddJavaScriptBundle("/js/md.min.us",
+                    "js/commonmark.js",
+                    "Scripts/md-editor.js"
+                    ).UseContentRoot();
+
+                _.AddJavaScriptBundle("/js/iconpicker.min.js",
+                    "js/fontawesome-iconpicker.js"
+                    ).UseContentRoot();
+
+                _.AddJavaScriptBundle("/js/coverissue-bookmarklet.min.js",
+                    "Scripts/CoverIssue-Bookmarklet.js"
+                    ).UseContentRoot();
+
+                _.AddJavaScriptBundle("/js/crop.min.js",
+                    "js/smartcrop.js",
+                    "js/cropper.js",
+                    "Scripts/localcrop.js"
+                    ).UseContentRoot();
+
+                _.AddCssBundle("/css/main.min.css",
+                    "css/bootstrap.css",
+                    "css/all.css",
+                    "css/slick.css",
+                    "css/slick-theme.css",
+                    "Styles/ops.css"
+                    ).UseContentRoot();
+
+                _.AddCssBundle("/css/md.min.css",
+                    "Styles/md-editor.css"
+                    ).UseContentRoot();
+
+                _.AddCssBundle("/css/iconpicker.min.css",
+                    "css/fontawesome-iconpicker.css",
+                    "Styles/iconpicker-fix.css"
+                    ).UseContentRoot();
+
+                _.AddCssBundle("/css/crop.min.css",
+                    "css/cropper.css"
+                    ).UseContentRoot();
+            });
 
             services.AddHttpClient<Utility.Abstract.IGoogleClient, Utility.Clients.GoogleClient>();
             services.AddHttpClient<Service.Abstract.IScreenlyClient, ScreenlyClient>()

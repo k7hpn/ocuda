@@ -63,7 +63,12 @@ namespace Ocuda.Promenade.Web
                 throw new ArgumentNullException(nameof(pathResolver));
             }
 
-            app.UseResponseCompression();
+            if (!_isDevelopment)
+            {
+                app.UseResponseCompression();
+            }
+
+            app.UseWebOptimizer();
 
             if (!string.IsNullOrEmpty(_config[Configuration.OcudaProxyAddress]))
             {
@@ -329,6 +334,30 @@ namespace Ocuda.Promenade.Web
                     })
                     .AddSessionStateTempDataProvider();
             }
+
+            services.AddWebOptimizer(_ =>
+            {
+                _.AddFiles("text/javascript", "/js/*");
+                _.AddFiles("text/css", "/css/*");
+
+                _.AddJavaScriptBundle("/js/scripts.min.js",
+                    "js/jquery.js",
+                    "js/jquery.validate.js",
+                    "js/jquery.validate.unobtrusive.js",
+                    "js/popper.js",
+                    "js/bootstrap.js",
+                    "js/slick.js",
+                    "Scripts/script.js"
+                    ).UseContentRoot();
+
+                _.AddCssBundle("/css/styles.min.css",
+                    "css/bootstrap.css",
+                    "css/all.css",
+                    "css/slick.css",
+                    "css/slick-theme.css",
+                    "Styles/style.css"
+                    ).UseContentRoot();
+            });
 
             services.Configure<RouteOptions>(_ =>
             {
