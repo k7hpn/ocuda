@@ -26,7 +26,8 @@
             </script>
         }
     }
-    <link rel="stylesheet" href="~/css/styles.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/styles.min.css" />
     @if (Context.Items.ContainsKey(ItemKey.ExternalCSS))
     {
         foreach (var cssUrl in (List<string>)Context.Items[ItemKey.ExternalCSS])

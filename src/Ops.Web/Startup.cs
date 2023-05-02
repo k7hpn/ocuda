@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -279,8 +278,12 @@ namespace Ocuda.Ops.Web
                     "Scripts/localcrop.js"
                     ).UseContentRoot();
 
+                // minifying Bootstrap seems to upset this tool, bring it in pre-minified
+                _.AddCssBundle("/js/bootstrap.min.css",
+                    new NUglify.Css.CssSettings { MinifyExpressions = false },
+                    "js/bootstrap.min.css").UseContentRoot();
+
                 _.AddCssBundle("/css/main.min.css",
-                    "css/bootstrap.css",
                     "css/all.css",
                     "css/slick.css",
                     "css/slick-theme.css",

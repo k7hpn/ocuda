@@ -27,7 +27,7 @@ cp /app/src/Ops.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/src/Ops.
 mkdir -p /app/src/Ops.Web/css
 rm -rf /app/src/Ops.Web/css/*.css
 
-cp /app/src/Ops.Web/node_modules/bootstrap/dist/css/bootstrap.css /app/src/Ops.Web/css
+cp /app/src/Ops.Web/node_modules/bootstrap/dist/css/bootstrap.min.css /app/src/Ops.Web/css
 cp /app/src/Ops.Web/node_modules/@fortawesome/fontawesome-free/css/all.css /app/src/Ops.Web/css
 cp /app/src/Ops.Web/node_modules/slick-carousel/slick/slick.css /app/src/Ops.Web/css
 cp /app/src/Ops.Web/node_modules/slick-carousel/slick/slick-theme.css /app/src/Ops.Web/css
@@ -62,7 +62,7 @@ cp /app/src/Promenade.Web/node_modules/@popperjs/core/dist/umd/popper.js /app/sr
 mkdir -p /app/src/Promenade.Web/css
 rm -rf /app/src/Promenade.Web/css/*.css
 
-cp /app/src/Promenade.Web/node_modules/bootstrap/dist/css/bootstrap.css /app/src/Promenade.Web/css
+cp /app/src/Promenade.Web/node_modules/bootstrap/dist/css/bootstrap.min.css /app/src/Promenade.Web/css
 cp /app/src/Promenade.Web/node_modules/@fortawesome/fontawesome-free/css/all.css /app/src/Promenade.Web/css
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/slick.css /app/src/Promenade.Web/css
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/slick-theme.css /app/src/Promenade.Web/css
