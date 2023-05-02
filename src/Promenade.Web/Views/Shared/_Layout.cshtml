@@ -503,6 +503,7 @@
         }
     </div>
     <script src="~/js/scripts.min.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.min.js" asp-append-version="true"></script>
     @if (Context.Items.ContainsKey(ItemKey.ExternalJS))
     {
         foreach (var jsUrl in (List<string>)Context.Items[ItemKey.ExternalJS])

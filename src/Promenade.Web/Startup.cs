@@ -345,10 +345,14 @@ namespace Ocuda.Promenade.Web
                     "js/jquery.validate.js",
                     "js/jquery.validate.unobtrusive.js",
                     "js/popper.js",
-                    "js/bootstrap.js",
                     "js/slick.js",
                     "Scripts/script.js"
                     ).UseContentRoot();
+
+                // minifying Bootstrap seems to upset this tool, bring it in pre-minified
+                _.AddJavaScriptBundle("/js/bootstrap.min.js",
+                    new NUglify.JavaScript.CodeSettings { MinifyCode = false },
+                    "js/bootstrap.min.js").UseContentRoot();
 
                 _.AddCssBundle("/css/styles.min.css",
                     "css/bootstrap.css",

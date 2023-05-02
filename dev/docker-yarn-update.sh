@@ -12,7 +12,7 @@ cd /app/src/Ops.Web && yarn install
 mkdir -p /app/src/Ops.Web/js
 rm -rf /app/src/Ops.Web/js/*.js
 
-cp /app/src/Ops.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/Ops.Web/js
+cp /app/src/Ops.Web/node_modules/bootstrap/dist/js/bootstrap.min.js /app/src/Ops.Web/js
 cp /app/src/Ops.Web/node_modules/jquery/dist/jquery.js /app/src/Ops.Web/js
 cp /app/src/Ops.Web/node_modules/jquery-validation/dist/jquery.validate.js /app/src/Ops.Web/js
 cp /app/src/Ops.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js /app/src/Ops.Web/js
@@ -53,7 +53,7 @@ mkdir -p /app/src/Promenade.Web/js
 rm -rf /app/src/Promenade.Web/js/*.js
 
 cp /app/src/Promenade.Web/node_modules/jquery/dist/jquery.js /app/src/Promenade.Web/js
-cp /app/src/Promenade.Web/node_modules/bootstrap/dist/js/bootstrap.js /app/src/Promenade.Web/js
+cp /app/src/Promenade.Web/node_modules/bootstrap/dist/js/bootstrap.min.js /app/src/Promenade.Web/js
 cp /app/src/Promenade.Web/node_modules/jquery-validation/dist/jquery.validate.js /app/src/Promenade.Web/js
 cp /app/src/Promenade.Web/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js /app/src/Promenade.Web/js
 cp /app/src/Promenade.Web/node_modules/slick-carousel/slick/slick.js /app/src/Promenade.Web/js

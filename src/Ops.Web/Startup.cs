@@ -55,27 +55,6 @@ namespace Ocuda.Ops.Web
             if (_isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider
-                    = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-                        Path.Combine(Path.GetFullPath("Styles"))),
-                    RequestPath = new PathString("/devstyles")
-                });
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider
-                    = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-                        Path.Combine(Path.GetFullPath("Scripts"))),
-                    RequestPath = new PathString("/devscripts")
-                });
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider
-                    = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-                        Path.Combine(Path.GetFullPath("node_modules"))),
-                    RequestPath = new PathString("/devmodules")
-                });
             }
             else
             {
@@ -267,15 +246,19 @@ namespace Ocuda.Ops.Web
 
                 _.AddJavaScriptBundle("/js/main.min.js",
                     "js/jquery.js",
-                    "js/popper.js",
-                    "js/bootstrap.js",
                     "js/jquery.validate.js",
                     "js/jquery.validate.unobtrusive.js",
+                    "js/popper.js",
                     "js/slick.js",
                     "js/slugify.js",
                     "Scripts/Layout.js",
                     "Scripts/ops.js"
                     ).UseContentRoot();
+
+                // minifying Bootstrap seems to upset this tool, bring it in pre-minified
+                _.AddJavaScriptBundle("/js/bootstrap.min.js",
+                    new NUglify.JavaScript.CodeSettings { MinifyCode = false },
+                    "js/bootstrap.min.js").UseContentRoot();
 
                 _.AddJavaScriptBundle("/js/md.min.us",
                     "js/commonmark.js",
