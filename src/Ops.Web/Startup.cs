@@ -322,6 +322,8 @@ namespace Ocuda.Ops.Web
                 Data.Ops.FileRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IFileTypeRepository,
                 Data.Ops.FileTypeRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IVolunteerUserMappingRepository,
+                Data.Ops.VolunteerUserMappingRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IHistoricalIncidentRepository,
                 Data.Ops.HistoricalIncidentRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IIncidentFollowupRepository,
@@ -451,6 +453,8 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.LocationProductMapRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ILocationRepository,
                 Data.Promenade.LocationRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.ILocationFormRepository,
+                Data.Promenade.LocationFormRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IPageHeaderRepository,
                 Data.Promenade.PageHeaderRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IPageItemRepository,
@@ -485,6 +489,10 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.SiteSettingPromRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISocialCardRepository,
                 Data.Promenade.SocialCardRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IVolunteerFormRepository,
+                Data.Promenade.VolunteerFormRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IVolunteerFormSubmissionRepository,
+                Data.Promenade.VolunteerFormSubmissionRepository>();
 
             // services
             services.AddScoped<IAuthorizationService, AuthorizationService>();
@@ -545,6 +553,7 @@ namespace Ocuda.Ops.Web
             services.AddScoped<IUserMetadataTypeService, UserMetadataTypeService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserSyncService, UserSyncService>();
+            services.AddScoped<IVolunteerFormService, VolunteerFormService>();
 
             // background process
             services.AddScoped<JobScopedProcessingService>();
