@@ -1,0 +1,44 @@
+﻿@model Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events.IndexViewModel
+
+<div class="d-flex justify-content-between mb-2">
+    <h1>
+        Events
+    </h1>
+    <div class="pt-2">
+        <a class="btn btn-outline-dark"
+           asp-action="@nameof(VolunteerController.AddForm)">
+            <span class="fa-solid fa-circle-plus" aria-hidden="true"></span>
+            Import events
+        </a>
+        <a class="btn btn-outline-dark"
+           asp-controller="@Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Name"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Index))">Back</a>
+    </div>
+</div>
+
+@if (true)
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-warning">No events found.</div>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <nav paginate="@Model"></nav>
+}
+
+@section scripts {
+}

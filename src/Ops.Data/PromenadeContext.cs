@@ -13,43 +13,27 @@ namespace Ocuda.Ops.Data
         {
         }
 
+        public DbSet<AgeGroup> AgeGroups { get; set; }
         public DbSet<CardDetail> CardDetails { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<CarouselButtonLabel> CarouselButtonLabels { get; set; }
-
         public DbSet<CarouselButtonLabelText> CarouselButtonLabelTexts { get; set; }
-
         public DbSet<CarouselButton> CarouselButtons { get; set; }
-
         public DbSet<CarouselItem> CarouselItems { get; set; }
-
         public DbSet<CarouselItemText> CarouselItemTexts { get; set; }
-
         public DbSet<Carousel> Carousels { get; set; }
-
         public DbSet<CarouselTemplate> CarouselTemplates { get; set; }
-
         public DbSet<CarouselText> CarouselTexts { get; set; }
-
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<CategoryText> CategoryTexts { get; set; }
-
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
-
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Emedia> Emedia { get; set; }
-
         public DbSet<EmediaCategory> EmediaCategories { get; set; }
-
         public DbSet<EmediaGroup> EmediaGroups { get; set; }
-
         public DbSet<EmediaText> EmediaTexts { get; set; }
-
         public DbSet<ExternalResource> ExternalResources { get; set; }
-
         public DbSet<Feature> Features { get; set; }
-
         public DbSet<Group> Groups { get; set; }
         public DbSet<ImageFeatureItem> ImageFeatureItems { get; set; }
         public DbSet<ImageFeatureItemText> ImageFeatureItemTexts { get; set; }
@@ -76,6 +60,11 @@ namespace Ocuda.Ops.Data
         public DbSet<Podcast> Podcasts { get; set; }
         public DbSet<ProductLocationInventory> ProductLocationInventories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroup { get; }
+        public DbSet<ScheduledEventCategory> ScheduledEventCategories { get; }
+        public DbSet<ScheduledEventEventCategory> ScheduledEventEventCategories { get; }
+        public DbSet<ScheduledEvent> ScheduledEvents { get; }
+        public DbSet<ScheduledEventType> ScheduledEventType { get; }
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; }
         public DbSet<ScheduleRequestLimit> ScheduleRequestLimits { get; set; }
         public DbSet<ScheduleRequestSubject> ScheduleRequestSubject { get; set; }
@@ -106,6 +95,8 @@ namespace Ocuda.Ops.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
+            modelBuilder.Entity<AgeGroup>()
+                .HasKey(_ => new { _.Id, _.LanguageId });
             modelBuilder.Entity<CardDetail>()
                 .HasKey(_ => new { _.CardId, _.LanguageId });
             modelBuilder.Entity<CarouselButtonLabelText>()
@@ -144,9 +135,16 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.DayOfWeek, _.Hour });
             modelBuilder.Entity<ScheduleRequestSubjectText>()
                 .HasKey(_ => new { _.ScheduleRequestSubjectId, _.LanguageId });
+            modelBuilder.Entity<ScheduledEventAgeGroup>()
+                .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
+            modelBuilder.Entity<ScheduledEventCategory>()
+                .HasKey(_ => new { _.Id, _.LanguageId });
+            modelBuilder.Entity<ScheduledEventEventCategory>()
+                .HasKey(_ => new { _.ScheduledEventCategoryId, _.ScheduledEventId });
+            modelBuilder.Entity<ScheduledEventType>()
+                .HasKey(_ => new { _.Id, _.LanguageId });
             modelBuilder.Entity<SegmentText>()
                 .HasKey(_ => new { _.LanguageId, _.SegmentId });
-
             modelBuilder.Entity<VolunteerForm>()
                 .Property(_ => _.VolunteerFormType)
                 .HasConversion<int>();

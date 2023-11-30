@@ -1,0 +1,40 @@
+﻿@model Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events.ImportViewModel
+
+<div class="d-flex justify-content-between mb-2">
+    <h1>
+        Import Events
+    </h1>
+    <div class="pt-2">
+        <a class="btn btn-outline-dark"
+           asp-controller="@Ocuda.Ops.Controllers.Areas.SiteManagement.EventsController.Name"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.SiteManagement.EventsController.Index))">Back</a>
+    </div>
+</div>
+
+<form asp-action="@nameof(EventsController.Upload)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <div class="mb-3 row my-2">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <label for="rosterFile" class="form-label">Select a JSON file of programs to upload</label>
+            <div class="input-group">
+                <input type="file"
+                       class="form-control"
+                       id="rosterFile"
+                       asp-for="Import"
+                       accept=".json" />
+                <button type="submit"
+                        class="btn btn-outline-success"
+                        aria-label="Confirm"
+                        button-spinner>
+                    <span class="fa-solid fa-file-arrow-up"></span>
+                    Upload
+                </button>
+            </div>
+            <div>
+                <span asp-validation-for="Import" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
