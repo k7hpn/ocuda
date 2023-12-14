@@ -10,7 +10,6 @@ namespace Ocuda.Promenade.Data
         {
         }
 
-        public DbSet<AgeGroup> AgeGroups { get; }
         public DbSet<CardDetail> CardDetails { get; }
         public DbSet<Card> Cards { get; }
         public DbSet<CarouselButtonLabel> CarouselButtonLabels { get; }
@@ -57,11 +56,10 @@ namespace Ocuda.Promenade.Data
         public DbSet<Podcast> Podcasts { get; }
         public DbSet<ProductLocationInventory> ProductLocationInventories { get; }
         public DbSet<Product> Products { get; }
-        public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroup { get; }
-        public DbSet<ScheduledEventCategory> ScheduledEventCategories { get; }
-        public DbSet<ScheduledEventEventCategory> ScheduledEventEventCategories { get; }
+        public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroups { get; }
+        public DbSet<ScheduledEventLocation> ScheduledEventLocations { get; }
+        public DbSet<ScheduledEventRelationship> ScheduledEventRelationships { get; }
         public DbSet<ScheduledEvent> ScheduledEvents { get; }
-        public DbSet<ScheduledEventType> ScheduledEventType { get; }
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; }
         public DbSet<ScheduleRequestLimit> ScheduleRequestLimits { get; }
         public DbSet<ScheduleRequestSubject> ScheduleRequestSubject { get; }
@@ -84,8 +82,7 @@ namespace Ocuda.Promenade.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
-            modelBuilder.Entity<AgeGroup>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
+
             modelBuilder.Entity<CardDetail>()
                 .HasKey(_ => new { _.CardId, _.LanguageId });
             modelBuilder.Entity<CarouselButtonLabelText>()
@@ -126,12 +123,12 @@ namespace Ocuda.Promenade.Data
                 .HasKey(_ => new { _.LanguageId, _.ScheduleRequestSubjectId });
             modelBuilder.Entity<ScheduledEventAgeGroup>()
                 .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
-            modelBuilder.Entity<ScheduledEventCategory>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
-            modelBuilder.Entity<ScheduledEventEventCategory>()
-                .HasKey(_ => new { _.ScheduledEventCategoryId, _.ScheduledEventId });
-            modelBuilder.Entity<ScheduledEventType>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
+            modelBuilder.Entity<ScheduledEventAgeGroup>()
+                .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
+            modelBuilder.Entity<ScheduledEventLocation>()
+                .HasKey(_ => new { _.ScheduledEventId, _.LocationId });
+            modelBuilder.Entity<ScheduledEventRelationship>()
+                .HasKey(_ => new { _.ScheduledEventId, _.RelatedScheduledEventId });
             modelBuilder.Entity<SegmentText>()
                 .HasKey(_ => new { _.LanguageId, _.SegmentId });
         }

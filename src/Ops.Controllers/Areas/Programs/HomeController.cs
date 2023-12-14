@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,43 +7,55 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ocuda.Ops.Controllers.Abstract;
-using Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events;
+using Ocuda.Ops.Controllers.Areas.Programs.ViewModels;
 using Ocuda.Ops.Controllers.ServiceFacades;
+using Ocuda.Ops.Models.Entities;
 using Ocuda.Ops.Models.Keys;
 using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Services;
+using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Utility.Exceptions;
+using Ocuda.Utility.Extensions;
+using Ocuda.Utility.Models;
 
-namespace Ocuda.Ops.Controllers.Areas.SiteManagement
+namespace Ocuda.Ops.Controllers.Areas.Programs
 {
-    [Area("SiteManagement")]
+    [Area(nameof(Programs))]
     [Route("[area]/[controller]")]
-    public class EventsController : BaseController<EventsController>
+    public class HomeController : BaseController<HomeController>
     {
         private readonly IEventService _eventService;
+        private readonly ILibraryProgramService _libraryProgramService;
+        private readonly ILocationService _locationService;
         private readonly IPermissionGroupService _permissionGroupService;
 
-        public EventsController(Controller<EventsController> context,
+        public HomeController(Controller<HomeController> context,
             IEventService eventService,
+            ILibraryProgramService libraryProgramService, 
+            ILocationService locationService,
             IPermissionGroupService permissionGroupService) : base(context)
         {
             ArgumentNullException.ThrowIfNull(eventService);
+            ArgumentNullException.ThrowIfNull(libraryProgramService);
+            ArgumentNullException.ThrowIfNull(locationService);
             ArgumentNullException.ThrowIfNull(permissionGroupService);
 
             _eventService = eventService;
+            _libraryProgramService = libraryProgramService;
+            _locationService = locationService;
             _permissionGroupService = permissionGroupService;
         }
 
         public static string Area
-        { get { return nameof(SiteManagement); } }
+        { get { return nameof(Programs); } }
 
         public static string Name
-        { get { return "Events"; } }
+        { get { return "Home"; } }
 
-        [HttpGet("")]
+        [HttpGet("[action]")]
         public async Task<IActionResult> Import()
         {
-            if (!await HasPermission())
+            if (!await HasImportPermissionAsync())
             {
                 return RedirectToUnauthorized();
             }
@@ -50,15 +63,30 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             return View();
         }
 
-        [HttpGet("")]
-        [HttpGet("[action]/{page}")]
-        public async Task<IActionResult> Index(int page)
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            if (!await HasPermission())
+            var viewModel = new DetailsViewModel
             {
-                return RedirectToUnauthorized();
+                LibraryProgram = await _libraryProgramService.GetAsync(id),
+                RegistrationChoice = "None",
+                ScheduledEvent = await _eventService.GetEventAsync(ScheduledEventType.Program, id)
+            };
+
+            if (viewModel.LibraryProgram?.IsRegistrationRequired == true)
+            {
+                viewModel.RegistrationChoice = viewModel
+                    .LibraryProgram?
+                    .IsStaffRegistrationRequired == true ? "Staff" : "Customer";
             }
 
+            return View(viewModel);
+        }
+
+        [HttpGet("")]
+        [HttpGet("{page}")]
+        public async Task<IActionResult> Index(int page)
+        {
             page = page == 0 ? 1 : page;
 
             var itemsPerPage = await _siteSettingService
@@ -66,14 +94,20 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
 
             var filter = new BaseFilter(page, itemsPerPage);
 
-            //var events = _eventService.PaginateAsync(filter);
+            var programs = await _libraryProgramService.PaginateAsync(filter);
 
             var viewModel = new IndexViewModel
             {
                 CurrentPage = page,
-                //ItemCount = formList.Count,
-                //ItemsPerPage = filter.Take.Value
+                HasImportPermission = await HasImportPermissionAsync(),
+                ItemCount = programs.Count,
+                ItemsPerPage = filter.Take.Value
             };
+
+            viewModel.LocationNames
+                .AddRange(await _locationService.GetAllNamesIncludingDeletedAsync());
+
+            ((List<LibraryProgram>)viewModel.LibraryPrograms).AddRange(programs.Data);
 
             if (viewModel.PastMaxPage)
             {
@@ -84,9 +118,9 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> Upload(ImportViewModel viewModel)
+        public async Task<IActionResult> UploadPrograms(ImportViewModel viewModel)
         {
-            if (!await HasPermission())
+            if (!await HasImportPermissionAsync())
             {
                 return RedirectToUnauthorized();
             }
@@ -96,27 +130,34 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                 using (Serilog.Context.LogContext.PushProperty("ImportFileName", viewModel.FileName))
                 {
                     _logger.LogInformation("Inserting programs from {FileName}", viewModel.FileName);
-                    var timer = System.Diagnostics.Stopwatch.StartNew();
                     var tempFile = Path.GetTempFileName();
-                    using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                    await using (var fileStream = new FileStream(tempFile, FileMode.Create))
                     {
                         await viewModel.Import.CopyToAsync(fileStream);
                     }
 
                     try
                     {
-                        var rosterResult
-                            = await _eventService.ImportAsync(CurrentUserId, tempFile);
-                        timer.Stop();
-                        _logger.LogInformation("Roster {FileName} processed {Count} rows in {ElapsedMs} ms",
+                        var importResult = await _libraryProgramService
+                            .ImportAsync(CurrentUserId, tempFile, true || viewModel.PerformImport);
+
+                        _logger.LogInformation("File {FileName} processed {Count} items in {ElapsedMs} ms",
                             viewModel.FileName,
-                            rosterResult.TotalItems,
-                            timer.ElapsedMilliseconds);
-                        var alert = new StringBuilder($"Imported {rosterResult.TotalItems} items in {timer.Elapsed} ms");
-                        if (rosterResult.Issues?.Count > 0)
+                            importResult.TotalRecords,
+                            importResult.Stopwatch.ElapsedMilliseconds);
+
+                        var alert = new StringBuilder("Imported ")
+                            .Append(importResult.TotalRecords)
+                            .Append(" items and experienced ")
+                            .Append(importResult.RecordsWithIssues)
+                            .Append(" records with issues in ")
+                            .Append(importResult.Stopwatch.ElapsedMilliseconds)
+                            .AppendLine(" ms");
+
+                        if (importResult.Issues?.Count > 0)
                         {
                             alert.Append("<ul>");
-                            foreach (var item in rosterResult.Issues)
+                            foreach (var item in importResult.Issues)
                             {
                                 alert.Append("<li>").Append(item).Append("</li>");
                             }
@@ -155,10 +196,11 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> HasPermission()
+        private async Task<bool> HasImportPermissionAsync()
         {
+            // TODO fix this permission lookup
             return await HasAppPermissionAsync(_permissionGroupService,
-                ApplicationPermission.EventManagement);
+                ApplicationPermission.UserSync);
         }
     }
 }

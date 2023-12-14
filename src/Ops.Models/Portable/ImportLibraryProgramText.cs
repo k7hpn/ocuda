@@ -2,7 +2,7 @@
 
 namespace Ocuda.Ops.Models.Portable
 {
-    public class LibraryProgramText
+    public class ImportLibraryProgramText
     {
         [Required]
         public string Description { get; set; } = string.Empty;

@@ -4,7 +4,7 @@ using Ocuda.Ops.Models.Entities;
 
 namespace Ocuda.Ops.Models.Abstract
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         public DateTime CreatedAt { get; set; }
 

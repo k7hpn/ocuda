@@ -7,6 +7,7 @@ using ExcelDataReader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Ocuda.Ops.Models;
+using Ocuda.Ops.Models.Abstract;
 using Ocuda.Ops.Models.Entities;
 using Ocuda.Ops.Models.Interfaces;
 using Ocuda.Ops.Service.Abstract;
@@ -643,14 +644,15 @@ namespace Ocuda.Ops.Service
             return headers;
         }
 
-        public async Task<RosterUpdate> ImportRosterAsync(int currentUserId, string filename)
+        public async Task<Ops.Models.Portable.ImportResult> ImportRosterAsync(int currentUserId, 
+            string filename)
         {
             string filePath = Path.Combine(Path.GetTempPath(), filename);
 
             // read file
             var import = ReadFile(filePath);
 
-            var rosterUpdate = new RosterUpdate();
+            var rosterUpdate = new Ops.Models.Portable.ImportResult();
 
             if (import?.ReportData == null || import.ReportData.Rows.Count == 0)
             {
@@ -776,8 +778,8 @@ namespace Ocuda.Ops.Service
             await _rosterDetailRepository.AddRangeAsync(rosterDetails);
             await _rosterDetailRepository.SaveAsync();
 
-            rosterUpdate.RosterHeaderId = rosterHeader.Id;
-            rosterUpdate.TotalRows = rosterDetails.Count;
+            rosterUpdate.HeaderId = rosterHeader.Id;
+            rosterUpdate.TotalRecords = rosterDetails.Count;
 
             return rosterUpdate;
         }
@@ -832,7 +834,7 @@ namespace Ocuda.Ops.Service
             return reportDefinitions;
         }
 
-        private static ImportResult ReadFile(string filePath)
+        private static RosterImportResult ReadFile(string filePath)
         {
             using var stream = new FileStream(filePath, FileMode.Open);
             using var excelReader = ExcelReaderFactory.CreateReader(stream);
@@ -844,7 +846,7 @@ namespace Ocuda.Ops.Service
 
             ImportReportDefinition? reportDefinition = null;
 
-            var result = new ImportResult();
+            var result = new RosterImportResult();
 
             while (excelReader.Read())
             {

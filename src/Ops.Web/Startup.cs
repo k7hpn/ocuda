@@ -367,6 +367,8 @@ namespace Ocuda.Ops.Web
                 Data.Ops.IncidentStaffRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IIncidentTypeRepository,
                 Data.Ops.IncidentTypeRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.ILibraryProgramRepository,
+                Data.Ops.LibraryProgramRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.ILinkLibraryRepository,
                 Data.Ops.LinkLibraryRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.ILinkRepository,
@@ -418,6 +420,8 @@ namespace Ocuda.Ops.Web
             services.AddScoped<Service.Interfaces.Ops.Repositories.IVolunteerFormSubmissionEmailRecordRepository,
                 Data.Ops.VolunteerFormSubmissionEmailRecordRepository>();
 
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IAgeGroupRepository,
+                Data.Promenade.AgeGroupRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ICardDetailRepository,
                 Data.Promenade.CardDetailRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ICardRepository,
@@ -510,6 +514,8 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.ScheduleRequestRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduleRequestSubjectRepository,
                 Data.Promenade.ScheduleRequestSubjectRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRepository,
+                Data.Promenade.ScheduledEventRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentRepository,
                 Data.Promenade.SegmentRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentTextRepository,
@@ -536,6 +542,7 @@ namespace Ocuda.Ops.Web
             services.AddScoped<IDigitalDisplaySyncService, DigitalDisplaySyncService>();
             services.AddScoped<IEmediaService, EmediaService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IEventService, EventService>();
             services.AddScoped<IExternalResourcePromService, ExternalResourcePromService>();
             services.AddScoped<IExternalResourceService, ExternalResourceService>();
             services.AddScoped<IFeatureService, FeatureService>();
@@ -549,6 +556,7 @@ namespace Ocuda.Ops.Web
             services.AddScoped<IInsertSampleDataService, InsertSampleDataService>();
             services.AddScoped<ILanguageService, LanguageService>();
             services.AddScoped<ILdapService, LdapService>();
+            services.AddScoped<ILibraryProgramService, LibraryProgramService>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<ILocationHoursService, LocationHoursService>();
             services.AddScoped<ILocationGroupService, LocationGroupService>();
@@ -558,6 +566,7 @@ namespace Ocuda.Ops.Web
                 Utility.Services.OcudaCache>();
             services.AddScoped<INavigationService, NavigationService>();
             services.AddScoped<IPageService, PageService>();
+            services.AddScoped<ILibraryProgramService, LibraryProgramService>();
             services.AddScoped<IPublicFilesService, PublicFilesService>();
             services.AddScoped<Utility.Services.Interfaces.IPathResolverService,
                 Utility.Services.PathResolverService>();

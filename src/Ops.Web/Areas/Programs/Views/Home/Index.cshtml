@@ -1,0 +1,118 @@
+﻿@using Ocuda.Ops.Controllers.Areas.Programs.ViewModels
+@model IndexViewModel
+
+<div class="d-flex justify-content-between mb-2">
+    <h1>
+        Programs
+    </h1>
+    <div class="pt-2">
+        @if (Model.HasImportPermission)
+        {
+            <a class="btn btn-outline-dark"
+               asp-action="@nameof(HomeController.Import)">
+                <span class="fa-solid fa-circle-plus" aria-hidden="true"></span>
+                Import programs
+            </a>
+        }
+        <a class="btn btn-outline-dark"
+           asp-controller="@Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Name"
+           asp-action="@nameof(Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Index)">Back</a>
+    </div>
+</div>
+
+@if (Model.LibraryPrograms.Count == 0)
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-warning">No programs found.</div>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Created by</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var program in Model.LibraryPrograms)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="@nameof(Ocuda.Ops.Controllers.Areas.Programs.HomeController.Details)"
+                           asp-controller="@Ocuda.Ops.Controllers.Areas.Programs.HomeController.Name"
+                           asp-area="@Ocuda.Ops.Controllers.Areas.Programs.HomeController.Area"
+                           asp-route-id="@program.Id">
+                            @if (string.IsNullOrEmpty(program.Title))
+                            {
+                                <strong><em>No title</em></strong>
+                            }
+                            else
+                            {
+                                @program.Title
+                            }
+                        </a>
+                    </td>
+
+                    <td>
+                        @program.StartDate.ToString("g")<br />
+                        @program.DurationText
+                    </td>
+                    <td>
+                        @if (program.IsOnline)
+                        {
+                            @:Online
+                        }
+                        else
+                        {
+                            @(Model.LocationNames.ContainsKey(program.LocationId) 
+                                ? @Model.LocationNames[program.LocationId] 
+                                : $"Unknown (id {program.LocationId})")
+                        }
+                    </td>
+                    <td>
+                        @if (program.CreatedByUser != null && !program.CreatedByUser.IsSysadmin)
+                        {
+                            <a asp-controller="@Ocuda.Ops.Controllers.ProfileController.Name"
+                               asp-action="@nameof(Ocuda.Ops.Controllers.ProfileController.Index)"
+                               asp-route-id="@program.CreatedByUser.Username"
+                               target="_blank">@program.CreatedByUser.Name</a>
+                        }
+                        else
+                        {
+                            @program.CreatedByUser.Name
+                        }
+
+                    </td>
+                    <td>
+                        @if (program.IsRegistrationRequired)
+                        {
+                            <span class="fa-solid fa-table-list fa-fw" 
+                            title="Registration required."></span>
+                        }
+                        @if (program.IsStaffRegistrationRequired)
+                        {
+                            <span class="fa-solid fa-building fa-fw"
+                                  title="Staff registration required."></span>
+                        }
+                        @if (program.IsGuardianInfoRequired)
+                        {
+                            <span class="fa-solid fa-hands-holding-child fa-fw"
+                            title="Guardian information required."></span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav paginate="@Model"></nav>
+}
+
+@section scripts {
+}

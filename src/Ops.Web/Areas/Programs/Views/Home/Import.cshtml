@@ -1,4 +1,4 @@
-﻿@model Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events.ImportViewModel
+﻿@model Ocuda.Ops.Controllers.Areas.Programs.ViewModels.ImportViewModel
 
 <div class="d-flex justify-content-between mb-2">
     <h1>
@@ -6,12 +6,12 @@
     </h1>
     <div class="pt-2">
         <a class="btn btn-outline-dark"
-           asp-controller="@Ocuda.Ops.Controllers.Areas.SiteManagement.EventsController.Name"
-           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.SiteManagement.EventsController.Index))">Back</a>
+           asp-controller="@HomeController.Name"
+           asp-action="@(nameof(HomeController.Index))">Back</a>
     </div>
 </div>
 
-<form asp-action="@nameof(EventsController.Upload)"
+<form asp-action="@nameof(HomeController.UploadPrograms)"
       method="post"
       role="form"
       enctype="multipart/form-data">

@@ -3,9 +3,9 @@ using System.Data;
 
 namespace Ocuda.Ops.Service.Models.Roster
 {
-    internal class ImportResult
+    internal class RosterImportResult
     {
-        public ImportResult()
+        public RosterImportResult()
         {
             ReportParameters = new Dictionary<string, string>();
             ReportData = new DataTable();

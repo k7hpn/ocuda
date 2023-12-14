@@ -141,6 +141,12 @@ namespace Ocuda.Ops.Service
             return await _userRepository.GetSupervisorAsync(userId);
         }
 
+        public async Task<int> GetSysadminIdAsync()
+        {
+            var admin = await _userRepository.GetSystemAdministratorAsync();
+            return admin.Id;
+        }
+
         public async Task<ICollection<string>> GetTitlesAsync()
         {
             // TODO add caching

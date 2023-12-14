@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Ocuda.Promenade.Models.Entities
 {
     public class AgeGroup
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Segment DisplayName { get; set; }
+
         [Required]
-        public int Id { get; set; }
+        public int DisplayNameId { get; set; }
 
         [Key]
         [Required]
-        public int LanguageId { get; set; }
+        public int Id { get; set; }
 
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
-
-        public IEnumerable<ScheduledEventAgeGroup> ScheduledEvents { get; set; }
     }
 }

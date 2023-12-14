@@ -1,4 +1,4 @@
-﻿namespace Ocuda.Ops.Models.Entities
+﻿namespace Ocuda.Utility.Models
 {
     public enum ScheduledEventType
     {

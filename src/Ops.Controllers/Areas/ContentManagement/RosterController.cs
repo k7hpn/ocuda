@@ -212,9 +212,9 @@ namespace Ocuda.Ops.Controllers.Areas.ContentManagement
                         timer.Stop();
                         _logger.LogInformation("Roster {FileName} processed {Count} rows in {ElapsedMs} ms",
                             model.FileName,
-                            rosterResult.TotalRows,
+                            rosterResult.TotalRecords,
                             timer.ElapsedMilliseconds);
-                        var alert = new StringBuilder($"Imported {rosterResult.TotalRows} rows in {timer.Elapsed} ms");
+                        var alert = new StringBuilder($"Imported {rosterResult.TotalRecords} rows in {timer.Elapsed} ms");
                         if (rosterResult.Issues?.Count > 0)
                         {
                             alert.Append("<ul>");
@@ -229,7 +229,7 @@ namespace Ocuda.Ops.Controllers.Areas.ContentManagement
                         {
                             ShowAlertInfo(alert.ToString());
                         }
-                        return RedirectToAction(nameof(Changes), new { rosterHeaderId = rosterResult.RosterHeaderId });
+                        return RedirectToAction(nameof(Changes), new { rosterHeaderId = rosterResult.HeaderId });
                     }
                     catch (Exception ex)
                     {

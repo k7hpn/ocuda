@@ -20,7 +20,8 @@ namespace Ocuda.Ops.Service.Interfaces.Ops.Services
 
         Task<CollectionWithCount<RosterHeader>> GetPaginatedRosterHeadersAsync(BaseFilter filter);
 
-        Task<RosterUpdate> ImportRosterAsync(int currentUserId, string filename);
+        Task<Ocuda.Ops.Models.Portable.ImportResult> ImportRosterAsync(int currentUserId,
+            string filename);
 
         Task UpdateDivisionMappingAsync(int divisionId, int? mappingId);
 

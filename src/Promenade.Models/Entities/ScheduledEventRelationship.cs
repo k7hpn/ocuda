@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ocuda.Ops.Models.Entities
+namespace Ocuda.Promenade.Models.Entities
 {
     public class ScheduledEventRelationship
     {

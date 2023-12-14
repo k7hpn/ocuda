@@ -29,6 +29,8 @@ namespace Ocuda.Ops.Service.Interfaces.Ops.Services
 
         Task<User> GetSupervisorAsync(int userId);
 
+        Task<int> GetSysadminIdAsync();
+
         Task<ICollection<string>> GetTitlesAsync();
 
         Task<bool> IsSupervisor(int userId);

@@ -1,15 +1,10 @@
-﻿@model Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events.IndexViewModel
+﻿@model Ocuda.Ops.Controllers.Areas.Events.ViewModels.IndexViewModel
 
 <div class="d-flex justify-content-between mb-2">
     <h1>
         Events
     </h1>
     <div class="pt-2">
-        <a class="btn btn-outline-dark"
-           asp-action="@nameof(VolunteerController.AddForm)">
-            <span class="fa-solid fa-circle-plus" aria-hidden="true"></span>
-            Import events
-        </a>
         <a class="btn btn-outline-dark"
            asp-controller="@Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Name"
            asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.SiteManagement.HomeController.Index))">Back</a>

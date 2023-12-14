@@ -60,11 +60,10 @@ namespace Ocuda.Ops.Data
         public DbSet<Podcast> Podcasts { get; set; }
         public DbSet<ProductLocationInventory> ProductLocationInventories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroup { get; }
-        public DbSet<ScheduledEventCategory> ScheduledEventCategories { get; }
-        public DbSet<ScheduledEventEventCategory> ScheduledEventEventCategories { get; }
-        public DbSet<ScheduledEvent> ScheduledEvents { get; }
-        public DbSet<ScheduledEventType> ScheduledEventType { get; }
+        public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroups { get; set; }
+        public DbSet<ScheduledEventLocation> ScheduledEventLocations { get; set; }
+        public DbSet<ScheduledEventRelationship> ScheduledEventRelationships { get; set; }
+        public DbSet<ScheduledEvent> ScheduledEvents { get; set; }
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; }
         public DbSet<ScheduleRequestLimit> ScheduleRequestLimits { get; set; }
         public DbSet<ScheduleRequestSubject> ScheduleRequestSubject { get; set; }
@@ -95,8 +94,6 @@ namespace Ocuda.Ops.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
-            modelBuilder.Entity<AgeGroup>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
             modelBuilder.Entity<CardDetail>()
                 .HasKey(_ => new { _.CardId, _.LanguageId });
             modelBuilder.Entity<CarouselButtonLabelText>()
@@ -137,12 +134,10 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.ScheduleRequestSubjectId, _.LanguageId });
             modelBuilder.Entity<ScheduledEventAgeGroup>()
                 .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
-            modelBuilder.Entity<ScheduledEventCategory>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
-            modelBuilder.Entity<ScheduledEventEventCategory>()
-                .HasKey(_ => new { _.ScheduledEventCategoryId, _.ScheduledEventId });
-            modelBuilder.Entity<ScheduledEventType>()
-                .HasKey(_ => new { _.Id, _.LanguageId });
+            modelBuilder.Entity<ScheduledEventLocation>()
+                .HasKey(_ => new { _.ScheduledEventId, _.LocationId });
+            modelBuilder.Entity<ScheduledEventRelationship>()
+                .HasKey(_ => new { _.ScheduledEventId, _.RelatedScheduledEventId });
             modelBuilder.Entity<SegmentText>()
                 .HasKey(_ => new { _.LanguageId, _.SegmentId });
             modelBuilder.Entity<VolunteerForm>()

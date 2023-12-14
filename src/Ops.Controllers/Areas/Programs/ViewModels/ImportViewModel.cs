@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events
+namespace Ocuda.Ops.Controllers.Areas.Programs.ViewModels
 {
     public class ImportViewModel
     {
@@ -18,5 +18,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement.ViewModels.Events
 
         [Required]
         public IFormFile Import { get; set; }
+
+        public bool PerformImport { get; set; }
     }
 }

@@ -43,6 +43,9 @@ namespace Ocuda.Ops.Data
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<IncidentStaff> IncidentStaffs { get; set; }
         public DbSet<IncidentType> IncidentTypes { get; set; }
+        public DbSet<LibraryProgram> LibraryPrograms {get;set;}
+
+        public DbSet<LibraryProgramRelationship> LibraryProgramRelationships { get; set; }
         public DbSet<LinkLibrary> LinkLibraries { get; set; }
         public DbSet<Link> Links { get; set; }
         public DbSet<PermissionGroupApplication> PermissionGroupApplication { get; set; }
@@ -99,6 +102,8 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.FileLibraryId, _.FileTypeId });
             modelBuilder.Entity<IncidentRelationship>()
                 .HasKey(_ => new { _.IncidentId, _.RelatedIncidentId });
+            modelBuilder.Entity<LibraryProgramRelationship>()
+                .HasKey(_ => new { _.LibraryProgramId, _.RelatedLibraryProgramId });
             modelBuilder.Entity<PermissionGroupApplication>()
                 .HasKey(_ => new { _.PermissionGroupId, _.ApplicationPermission });
             modelBuilder.Entity<PermissionGroupPageContent>()
