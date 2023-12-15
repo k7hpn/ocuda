@@ -466,6 +466,8 @@ namespace Ocuda.Promenade.Web
                 Data.Promenade.ProductInventoryRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IProductRepository,
                 Data.Promenade.ProductRepository>();
+            services.AddScoped<Service.Interfaces.Repositories.IScheduledEventRepository,
+                Data.Promenade.ScheduledEventRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IScheduleRequestLimitRepository,
                 Data.Promenade.ScheduleRequestLimitRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IScheduleRequestRepository,
@@ -518,6 +520,7 @@ namespace Ocuda.Promenade.Web
             services.AddScoped<RedirectService>();
             services.AddScoped<PodcastService>();
             services.AddScoped<ProductService>();
+            services.AddScoped<ScheduledEventService>();
             services.AddScoped<ScheduleService>();
             services.AddScoped<SegmentService>();
             services.AddScoped<SiteAlertService>();

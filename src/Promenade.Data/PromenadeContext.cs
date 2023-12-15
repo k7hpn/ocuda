@@ -57,7 +57,7 @@ namespace Ocuda.Promenade.Data
         public DbSet<ProductLocationInventory> ProductLocationInventories { get; }
         public DbSet<Product> Products { get; }
         public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroups { get; }
-        public DbSet<ScheduledEventLocation> ScheduledEventLocations { get; }
+        public DbSet<ScheduledEventLocation> ScheduledEventLocations { get; set; }
         public DbSet<ScheduledEventRelationship> ScheduledEventRelationships { get; }
         public DbSet<ScheduledEvent> ScheduledEvents { get; }
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; }
@@ -121,8 +121,6 @@ namespace Ocuda.Promenade.Data
                 .HasKey(_ => new { _.DayOfWeek, _.Hour });
             modelBuilder.Entity<ScheduleRequestSubjectText>()
                 .HasKey(_ => new { _.LanguageId, _.ScheduleRequestSubjectId });
-            modelBuilder.Entity<ScheduledEventAgeGroup>()
-                .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
             modelBuilder.Entity<ScheduledEventAgeGroup>()
                 .HasKey(_ => new { _.ScheduledEventId, _.AgeGroupId });
             modelBuilder.Entity<ScheduledEventLocation>()

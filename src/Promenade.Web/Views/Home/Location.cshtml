@@ -106,6 +106,38 @@
         </div>
     }
 
+    @if (Model.ScheduledEvents?.Count() > 0)
+    {
+        <h2>Upcoming Events</h2>
+        <div class="row">
+            @foreach (var scheduledEvent in Model.ScheduledEvents)
+            {
+                <div class="col-12 col-md-4 d-flex mb-4">
+                    <div class="card flex-fill w-100">
+                        <div class="card-header">
+                            <div class="card-title h5 pt-1">
+                                <a asp-action="@nameof(HomeController.EventDetails)"
+                                   asp-controller="@HomeController.Name"
+                                   asp-route-slug="@scheduledEvent.Slug"
+                                   asp-route-locationSlug="@Model.Location.Stub">
+                                    @scheduledEvent.Title
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @scheduledEvent.Description
+                        </div>
+                        <div class="card-footer d-flex">
+                            <div class="flex-grow-1">@scheduledEvent.StartDate.ToString("g")</div>
+                            <div>@scheduledEvent.DurationText</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <h2>Library Features</h2>
     <div class="row prom-features">
         @foreach (var feature in Model.LocationFeatures)
         {
@@ -278,7 +310,7 @@
         });
     </script>
 
-    @if(Model.Schema != null)
+    @if (Model.Schema != null)
     {
         <script type="application/ld+json">
             @Html.Raw(Model.Schema.ToHtmlEscapedString())

@@ -6,6 +6,8 @@ namespace Ocuda.Ops.Controllers.Areas.Programs.ViewModels
 {
     public class ImportViewModel
     {
+        public bool CreateEvents { get; set; }
+
         [DisplayName("Program File")]
         [FileExtensions(Extensions = "json")]
         public string FileName

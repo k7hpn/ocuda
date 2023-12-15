@@ -516,6 +516,8 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.ScheduleRequestSubjectRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRepository,
                 Data.Promenade.ScheduledEventRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventLocationRepository,
+                Data.Promenade.ScheduledEventLocationRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentRepository,
                 Data.Promenade.SegmentRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentTextRepository,

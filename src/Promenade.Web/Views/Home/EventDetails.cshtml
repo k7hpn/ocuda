@@ -1,0 +1,10 @@
+﻿@model Ocuda.Promenade.Controllers.ViewModels.Home.EventDetailsViewModel
+<div class="row">
+    <div class="col">
+        <h1>@Model.ScheduledEvent.Title</h1>
+
+        <p>@Model.ScheduledEvent.StartDate.ToString("f"), @Model.ScheduledEvent.DurationText</p>
+
+        <p>@Model.ScheduledEvent.Description</p>
+    </div>
+</div>

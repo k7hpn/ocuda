@@ -21,11 +21,13 @@ namespace Ocuda.Promenade.Controllers
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly LocationService _locationService;
         private readonly PageService _pageService;
+        private readonly ScheduledEventService _scheduledEventService;
         private readonly VolunteerFormService _volunteerFormService;
 
         public HomeController(IDateTimeProvider dateTimeProvider,
            LocationService locationService,
            PageService pageService,
+           ScheduledEventService scheduledEventService,
            ServiceFacades.Controller<HomeController> context,
            ServiceFacades.PageController pageContext,
            VolunteerFormService volunteerFormService)
@@ -34,11 +36,13 @@ namespace Ocuda.Promenade.Controllers
             ArgumentNullException.ThrowIfNull(dateTimeProvider);
             ArgumentNullException.ThrowIfNull(locationService);
             ArgumentNullException.ThrowIfNull(pageService);
+            ArgumentNullException.ThrowIfNull(scheduledEventService);
             ArgumentNullException.ThrowIfNull(volunteerFormService);
 
             _dateTimeProvider = dateTimeProvider;
             _locationService = locationService;
             _pageService = pageService;
+            _scheduledEventService = scheduledEventService;
             _volunteerFormService = volunteerFormService;
         }
 
@@ -47,6 +51,17 @@ namespace Ocuda.Promenade.Controllers
 
         protected override PageType PageType
         { get { return PageType.Home; } }
+
+        [HttpGet("{locationSlug:locationSlugConstraint}/{slug}")]
+        public async Task<IActionResult> EventDetails(string slug)
+        {
+            var forceReload = HttpContext.Items[ItemKey.ForceReload] as bool? ?? false;
+
+            return View(new EventDetailsViewModel
+            {
+                ScheduledEvent = await _scheduledEventService.GetAsync(forceReload, slug)
+            });
+        }
 
         [HttpGet("{locationSlug:locationSlugConstraint}/[action]/{featureSlug}")]
         public async Task<IActionResult> Feature(string locationSlug, string featureSlug)
@@ -213,6 +228,10 @@ namespace Ocuda.Promenade.Controllers
                         .Count(_ => _.Location.HasEvents);
                 }
             }
+
+            // upcoming events
+            viewModel.ScheduledEvents = await _scheduledEventService
+                .GetUpcomingAsync(forceReload, viewModel.Location.Id, 3);
 
             if (HasAlertInfo)
             {

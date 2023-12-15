@@ -56,3 +56,43 @@
         </div>
     </form>
 </div>
+<div class="row">
+    <h2>Event</h2>
+    @if (Model.ScheduledEvent != null)
+    {
+        <div class="col">
+
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        Published
+                    </td>
+                    <td>
+                        @if (Model.ScheduledEvent.IsPublished)
+                        {
+                            <span class="fa-regular fa-circle-check text-success"></span>
+                        }
+                        else
+                        {
+                            <span class="fa-regular fa-circle-xmark"></span>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    </.>
+    @if (Model.ScheduledEvent?.IsPublished != true)
+    {
+        <div class="col">
+            <form asp-action="@nameof(Ocuda.Ops.Controllers.Areas.Programs.HomeController.PublishEvent)"
+                  asp-area="@Ocuda.Ops.Controllers.Areas.Programs.HomeController.Area"
+                  asp-controller="@Ocuda.Ops.Controllers.Areas.Programs.HomeController.Name"
+                  method="post">
+                <input type="hidden" name="id" value="@Model.LibraryProgram.Id" />
+                <button class="btn btn-outline-dark">Publish Event</button>
+            </form>
+        </div>
+    }
+</div>
+</div>

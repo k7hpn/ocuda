@@ -8,6 +8,7 @@ using Ocuda.Ops.Data.ServiceFacade;
 using Ocuda.Ops.Models.Entities;
 using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Repositories;
+using Ocuda.Utility.Exceptions;
 using Ocuda.Utility.Models;
 
 namespace Ocuda.Ops.Data.Ops
@@ -47,10 +48,18 @@ namespace Ocuda.Ops.Data.Ops
                 Data = await query
                     .OrderByDescending(_ => _.StartDate)
                     .ApplyPagination(filter)
-                    .Include(_ => _.CreatedByUser)
                     .AsNoTracking()
                     .ToListAsync()
             };
+        }
+
+        public async Task UpdateScheduledEventIdAsync(int libraryProgramId, int scheduledEventId)
+        {
+            var libraryProgram = await FindAsync(libraryProgramId)
+                ?? throw new OcudaException($"Unable to find library program id {libraryProgramId}");
+            libraryProgram.ScheduledEventId = scheduledEventId;
+            DbSet.Update(libraryProgram);
+            await _context.SaveChangesAsync();
         }
     }
 }

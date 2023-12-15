@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Ocuda.Utility.Helpers;
 
 namespace Ocuda.Ops.Models.Entities
 {
@@ -39,6 +40,18 @@ namespace Ocuda.Ops.Models.Entities
         [DisplayName("Duration (in minutes)")]
         public int DurationMinutes { get; set; }
 
+        public string DurationText
+        {
+            get
+            {
+                if (IsAllDay)
+                {
+                    return "All day";
+                }
+                return TimeDisplayHelper.FormatMinutes(DurationMinutes);
+            }
+        }
+
         public int? HistoricId { get; set; }
         public int? ImportedBy { get; set; }
         public string? Instructor { get; set; }
@@ -53,6 +66,8 @@ namespace Ocuda.Ops.Models.Entities
         [Required]
         public bool IsStaffRegistrationRequired { get; set; }
 
+        public int? LocationDescriptionSegmentId { get; set; }
+
         [Required]
         public int LocationId { get; set; }
 
@@ -63,6 +78,12 @@ namespace Ocuda.Ops.Models.Entities
         public int? MaxPeople { get; set; }
         public int? MaxWaitList { get; set; }
         public int? MinAgeMonths { get; set; }
+        public User OwnedByUser { get; set; }
+
+        [ForeignKey(nameof(OwnedByUser))]
+        public int OwnedByUserId { get; set; }
+
+        public int? ScheduledEventId { get; set; }
         public DateTime? SignUpEnd { get; set; }
 
         public DateTime? SignUpStart { get; set; }
@@ -82,63 +103,5 @@ namespace Ocuda.Ops.Models.Entities
 
         public int? TotalAttendance { get; set; }
         public string Type { get; set; } = string.Empty;
-
-        public string DurationText
-        {
-            get
-            {
-                if (IsAllDay)
-                {
-                    return "All day";
-                }
-                if (DurationMinutes == 1)
-                {
-                    return $"{DurationMinutes} minute";
-                }
-                if (DurationMinutes < 60)
-                {
-                    return $"{DurationMinutes} minutes";
-                }
-                var ts = TimeSpan.FromMinutes(DurationMinutes);
-                var sb = new StringBuilder();
-                if(ts.Days > 0)
-                {
-                    sb.Append(ts.Days);
-                    if(ts.Days > 1)
-                    {
-                        sb.Append(" days ");
-                    }
-                    else
-                    {
-                        sb.Append(" day ");
-                    }
-                }
-                if (ts.Hours > 0)
-                {
-                    sb.Append(ts.Hours);
-                    if (ts.Hours > 1)
-                    {
-                        sb.Append(" hours ");
-                    }
-                    else
-                    {
-                        sb.Append(" hour ");
-                    }
-                }
-                if(ts.Minutes > 0)
-                {
-                    sb.Append(ts.Minutes);
-                    if(ts.Minutes > 1)
-                    {
-                        sb.Append(" minutes ");
-                    }
-                    else
-                    {
-                        sb.Append(" minute ");
-                    }
-                }
-                return sb.ToString();
-            }
-        }
     }
 }

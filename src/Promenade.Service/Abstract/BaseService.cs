@@ -121,5 +121,16 @@ namespace Ocuda.Promenade.Service.Abstract
                 defaultLanguageId
             }.Distinct();
         }
+
+        protected async Task<string> GetSegmentTestAsync(SegmentService segmentService,
+                    bool forceReload,
+            int segmentId)
+        {
+            ArgumentNullException.ThrowIfNull(segmentService);
+
+            var segment = await segmentService
+                .GetSegmentTextBySegmentIdAsync(segmentId, forceReload);
+            return segment?.Text;
+        }
     }
 }

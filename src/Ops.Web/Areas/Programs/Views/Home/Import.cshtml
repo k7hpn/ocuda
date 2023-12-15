@@ -37,4 +37,22 @@
             </div>
         </div>
     </div>
+    <div class="mb-3 row my-2">
+        <div class="col">
+            <label>Peform import</label>
+            <select class="form-select" asp-for="PerformImport">
+                <option selected value="False">Test run</option>
+                <option value="True">Perform import</option>
+            </select>
+        </div>
+    </div>
+    <div class="mb-3 row my-2">
+        <div class="col">
+            <label>Events</label>
+            <select class="form-select" asp-for="CreateEvents">
+                <option selected value="False">Just create programs</option>
+                <option value="True">Also create events</option>
+            </select>
+        </div>
+    </div>
 </form>

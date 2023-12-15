@@ -1,61 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Ocuda.Utility.Helpers;
 using Ocuda.Utility.Models;
 
 namespace Ocuda.Promenade.Models.Entities
 {
-    [Index(nameof(ScheduledEventType), nameof(ItemId), IsUnique = true)]
+    // announcement
+    // closure (item connects to one or more locationhoursoverrides)
+    // program
+    // podca1t
+
+    [Index(nameof(Slug), IsUnique = true)]
     public class ScheduledEvent
     {
-        [Required]
-        public bool AllDay { get; set; }
+        [NotMapped]
+        public string Description { get; set; }
 
-        public SegmentText Description { get; set; }
-
-        public int DescriptionId { get; set; }
+        public int DescriptionSegmentId { get; set; }
 
         [Required]
         public int DurationMinutes { get; set; }
+
+        public string DurationText
+        {
+            get
+            {
+                if (IsAllDay)
+                {
+                    return "All day";
+                }
+                return TimeDisplayHelper.FormatMinutes(DurationMinutes);
+            }
+        }
+
+        public int? ExternalId { get; set; }
 
         [Key]
         public int Id { get; set; }
 
         [Required]
+        public bool IsAllDay { get; set; }
+
+        [Required]
         public bool IsPublished { get; set; }
 
-        public Segment LocationDescription { get; set; }
+        [NotMapped]
+        public string LocationDescription { get; set; }
+
         public int? LocationDescriptionId { get; set; }
-        public int? ProgramDetailsId { get; set; }
 
         // tbd job that switches ispublished after publishon
         // where publishon <= now and !ispublished
         public DateTime? PublishOn { get; set; }
 
-        public IEnumerable<ScheduledEventLocation> ScheduledEventLocations { get; set; }
-
         [Required]
         public ScheduledEventType ScheduledEventType { get; set; }
 
+        [MaxLength(255)]
         [Required]
-        public int ItemId { get; set; }
+        public string Slug { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
 
-        // announcement
-        // tbd - home page automatically?
+        [NotMapped]
+        public string Title { get; set; }
 
-        // closure
-        // closure item connects to one or more locationhoursoverrides
-
-        public SegmentText Title { get; set; }
-
-        // program
         [Required]
-        public int TitleId { get; set; }
-
-        // podcast
+        public int TitleSegmentId { get; set; }
     }
 }

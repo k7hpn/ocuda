@@ -12,9 +12,9 @@ namespace Ocuda.Ops.Service
 {
     public class LanguageService : ILanguageService
     {
-        private readonly ILogger<LanguageService> _logger;
         private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly ILanguageRepository _languageRepository;
+        private readonly ILogger<LanguageService> _logger;
 
         public LanguageService(ILogger<LanguageService> logger,
             IOptions<RequestLocalizationOptions> l10nOptions,
@@ -34,6 +34,11 @@ namespace Ocuda.Ops.Service
         public async Task<Language> GetActiveByIdAsync(int id)
         {
             return await _languageRepository.GetActiveByIdAsync(id);
+        }
+
+        public async Task<int> GetDefaultLanguageIdAsync()
+        {
+            return await _languageRepository.GetDefaultLanguageId();
         }
     }
 }

@@ -11,28 +11,44 @@
     </div>
 </div>
 
-@if (true)
+@if (Model.ScheduledEvents?.Count > 0)
+{
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Published</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var scheduledEvent in Model.ScheduledEvents)
+            {
+                <tr>
+                    <td>@scheduledEvent.Title</td>
+                    <td>
+                        @if (scheduledEvent.IsPublished)
+                        {
+                            <span class="fa-regular fa-circle-check text-success"></span>
+                        }
+                        else
+                        {
+                            <span class="fa-regular fa-circle-xmark"></span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav paginate="@Model"></nav>
+}
+else
 {
     <div class="row">
         <div class="col">
             <div class="alert alert-warning">No events found.</div>
         </div>
     </div>
-}
-else
-{
-    <table class="table table-sm table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <nav paginate="@Model"></nav>
 }
 
 @section scripts {

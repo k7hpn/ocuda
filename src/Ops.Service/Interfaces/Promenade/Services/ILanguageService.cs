@@ -7,6 +7,9 @@ namespace Ocuda.Ops.Service.Interfaces.Promenade.Services
     public interface ILanguageService
     {
         Task<ICollection<Language>> GetActiveAsync();
+
         Task<Language> GetActiveByIdAsync(int id);
+
+        Task<int> GetDefaultLanguageIdAsync();
     }
 }

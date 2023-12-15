@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -16,12 +17,16 @@ using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Promenade.Models.Entities;
 using Ocuda.Utility.Exceptions;
+using Ocuda.Utility.Extensions;
 using Ocuda.Utility.Models;
+using Slugify;
 
 namespace Ocuda.Ops.Service
 {
     public class LibraryProgramService : BaseService<LibraryProgramService>, ILibraryProgramService
     {
+        private const string StatusFormatted = "On {RecordNumber}/{TotalRecords} ({Percent}%) {Elapsed:hh\\:mm\\:ss} elapsed, estimated: {EstimatedTotal:hh\\:mm\\:ss} total, {EstimatedRemaining:hh\\:mm\\:ss} remaining";
+
         private readonly IEventService _eventService;
         private readonly ILanguageService _languageService;
         private readonly ILibraryProgramRepository _libraryProgramRepository;
@@ -52,22 +57,61 @@ namespace Ocuda.Ops.Service
             _userService = userService;
         }
 
+        public async Task<ScheduledEvent> CreateEventAsync(int libraryProgramId)
+        {
+            var libraryProgram = await _libraryProgramRepository.FindAsync(libraryProgramId)
+                ?? throw new OcudaException($"Unable to find library program id {libraryProgramId}");
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var titleSegment = await _segmentService
+                .GetBySegmentAndLanguageAsync(libraryProgram.TitleSegmentId, defaultLanguageId);
+
+            var slugBase = libraryProgram.StartDate.Year.ToString(CultureInfo.InvariantCulture)
+                + "-"
+                + libraryProgram.StartDate.Month.ToString(CultureInfo.InvariantCulture)
+                + "-"
+                + titleSegment.Text;
+
+            var slugHelper = new SlugHelper();
+            var slug = slugHelper.GenerateSlug(slugBase).TruncateTo(255);
+
+            var isSlugInUse = await _eventService.IsSlugInUseAsync(slug);
+
+            int counter = 0;
+            while (isSlugInUse)
+            {
+                counter++;
+                slug = slugHelper.GenerateSlug(slugBase.TruncateTo(252)
+                    + "-"
+                    + counter).TruncateTo(255);
+                isSlugInUse = await _eventService.IsSlugInUseAsync(slug);
+            }
+
+            var scheduledEvent = await _eventService.CreateEventAsync(libraryProgram, slug);
+
+            await _libraryProgramRepository
+                .UpdateScheduledEventIdAsync(libraryProgramId, scheduledEvent.Id);
+
+            return scheduledEvent;
+        }
+
         public async Task<LibraryProgram> GetAsync(int id)
         {
             var program = await _libraryProgramRepository.FindAsync(id);
-            var languages = await _languageService.GetActiveAsync();
-            var defaultLanguage = languages.Single(_ => _.IsDefault);
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var titleSegment = await _segmentService
-                .GetBySegmentAndLanguageAsync(program.TitleSegmentId, defaultLanguage.Id);
+                .GetBySegmentAndLanguageAsync(program.TitleSegmentId, defaultLanguageId);
             program.Title = titleSegment?.Text;
             var descrSegment = await _segmentService
-                .GetBySegmentAndLanguageAsync(program.DescriptionSegmentId, defaultLanguage.Id);
+                .GetBySegmentAndLanguageAsync(program.DescriptionSegmentId, defaultLanguageId);
             program.Description = descrSegment?.Text;
 
             return program;
         }
 
-        public async Task<ImportResult> ImportAsync(int userId, string filename, bool performImport)
+        public async Task<ImportResult> ImportAsync(int userId,
+            string filename,
+            bool performImport,
+            bool createEvents)
         {
             var result = new ImportResult();
 
@@ -141,6 +185,7 @@ namespace Ocuda.Ops.Service
                         MaxPeople = importProgram.MaxPeople,
                         MaxWaitList = importProgram.MaxWaitList,
                         MinAgeMonths = importProgram.MinAgeMonths,
+                        OwnedByUserId = adminUserId,
                         SignUpEnd = importProgram.SignUpEnd,
                         SignUpStart = importProgram.SignUpStart,
                         Sponsor = importProgram.Sponsor,
@@ -155,7 +200,7 @@ namespace Ocuda.Ops.Service
                     {
                         if (userCache.TryGetValue(importProgram.InternalEmail.Trim(), out var id))
                         {
-                            program.CreatedBy = id;
+                            program.OwnedByUserId = id;
                             foundUser = true;
                         }
                         else
@@ -164,7 +209,7 @@ namespace Ocuda.Ops.Service
                                 .LookupUserByEmailAsync(importProgram.InternalEmail.Trim());
                             if (userLookup != null)
                             {
-                                program.CreatedBy = userLookup.Id;
+                                program.OwnedByUserId = userLookup.Id;
                                 userCache.Add(importProgram.InternalEmail.Trim(), userLookup.Id);
                                 foundUser = true;
                             }
@@ -277,19 +322,28 @@ namespace Ocuda.Ops.Service
 
                         await _libraryProgramRepository.AddAsync(program);
                         await _libraryProgramRepository.SaveAsync();
+
+                        if (createEvents)
+                        {
+                            var scheduledEvent = await CreateEventAsync(program.Id);
+                            await _libraryProgramRepository
+                                .UpdateScheduledEventIdAsync(program.Id, scheduledEvent.Id);
+                        }
                     }
 
-                    if (result.TotalRecords % tenPercent == 0)
+                    if (result.TotalRecords % (tenPercent + 1) == 0
+                        || result.TotalRecords == programs.Items.Count)
                     {
-                        var timePer = result.Stopwatch.ElapsedMilliseconds / result.TotalRecords;
+                        var timePer = result.Stopwatch.Elapsed.TotalSeconds / result.TotalRecords;
                         var remainingRecords = programs.Items.Count - result.TotalRecords;
 
-                        _logger.LogInformation("On {RecordNumber}/{TotalRecords} ({Percent}%) {ElapsedMs} elapsed, estimated {EstimatedRemainingMs} remaining",
+                        _logger.LogInformation(StatusFormatted,
                             result.TotalRecords,
                             programs.Items.Count,
                             result.TotalRecords * 100 / programs.Items.Count,
-                            result.Stopwatch.ElapsedMilliseconds,
-                            timePer * remainingRecords);
+                            result.Stopwatch.Elapsed,
+                            TimeSpan.FromSeconds(timePer * programs.Items.Count),
+                            TimeSpan.FromSeconds(timePer * remainingRecords));
                     }
                 }
             }
@@ -313,7 +367,7 @@ namespace Ocuda.Ops.Service
                 {
                     program.Title = segment.Text;
                 }
-                program.CreatedByUser = await _userService.GetByIdAsync(program.CreatedBy);
+                program.OwnedByUser = await _userService.GetByIdAsync(program.OwnedByUserId);
             }
             return programs;
         }

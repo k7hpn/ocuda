@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ocuda.Ops.Controllers.Abstract;
@@ -7,6 +8,7 @@ using Ocuda.Ops.Controllers.ServiceFacades;
 using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
+using Ocuda.Promenade.Models.Entities;
 
 namespace Ocuda.Ops.Controllers.Areas.Events
 {
@@ -45,14 +47,16 @@ namespace Ocuda.Ops.Controllers.Areas.Events
 
             var filter = new BaseFilter(page, itemsPerPage);
 
-            //var events = _eventService.PaginateAsync(filter);
+            var events = await _eventService.PaginateAsync(filter);
 
             var viewModel = new IndexViewModel
             {
                 CurrentPage = page,
-                //ItemCount = formList.Count,
-                //ItemsPerPage = filter.Take.Value
+                ItemCount = events.Count,
+                ItemsPerPage = filter.Take.Value
             };
+
+            ((List<ScheduledEvent>)viewModel.ScheduledEvents).AddRange(events.Data);
 
             if (viewModel.PastMaxPage)
             {

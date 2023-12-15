@@ -35,8 +35,9 @@ else
             <tr>
                 <th>Name</th>
                 <th>Date</th>
+                <th>Duration</th>
                 <th>Location</th>
-                <th>Created by</th>
+                <th>Owned by</th>
                 <th></th>
             </tr>
         </thead>
@@ -61,7 +62,9 @@ else
                     </td>
 
                     <td>
-                        @program.StartDate.ToString("g")<br />
+                        @program.StartDate.ToString("g")
+                    </td>
+                    <td>
                         @program.DurationText
                     </td>
                     <td>
@@ -71,30 +74,30 @@ else
                         }
                         else
                         {
-                            @(Model.LocationNames.ContainsKey(program.LocationId) 
-                                ? @Model.LocationNames[program.LocationId] 
+                            @(Model.LocationNames.ContainsKey(program.LocationId)
+                                ? @Model.LocationNames[program.LocationId]
                                 : $"Unknown (id {program.LocationId})")
                         }
                     </td>
                     <td>
-                        @if (program.CreatedByUser != null && !program.CreatedByUser.IsSysadmin)
+                        @if (program.OwnedByUser != null && !program.OwnedByUser.IsSysadmin)
                         {
                             <a asp-controller="@Ocuda.Ops.Controllers.ProfileController.Name"
                                asp-action="@nameof(Ocuda.Ops.Controllers.ProfileController.Index)"
-                               asp-route-id="@program.CreatedByUser.Username"
-                               target="_blank">@program.CreatedByUser.Name</a>
+                               asp-route-id="@program.OwnedByUser.Username"
+                               target="_blank">@program.OwnedByUser.Name</a>
                         }
                         else
                         {
-                            @program.CreatedByUser.Name
+                            @program.OwnedByUser.Name
                         }
 
                     </td>
                     <td>
                         @if (program.IsRegistrationRequired)
                         {
-                            <span class="fa-solid fa-table-list fa-fw" 
-                            title="Registration required."></span>
+                            <span class="fa-solid fa-table-list fa-fw"
+                                  title="Registration required."></span>
                         }
                         @if (program.IsStaffRegistrationRequired)
                         {
@@ -104,7 +107,7 @@ else
                         @if (program.IsGuardianInfoRequired)
                         {
                             <span class="fa-solid fa-hands-holding-child fa-fw"
-                            title="Guardian information required."></span>
+                                  title="Guardian information required."></span>
                         }
                     </td>
                 </tr>

@@ -16,7 +16,6 @@ using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Utility.Exceptions;
 using Ocuda.Utility.Extensions;
-using Ocuda.Utility.Models;
 
 namespace Ocuda.Ops.Controllers.Areas.Programs
 {
@@ -31,7 +30,7 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
 
         public HomeController(Controller<HomeController> context,
             IEventService eventService,
-            ILibraryProgramService libraryProgramService, 
+            ILibraryProgramService libraryProgramService,
             ILocationService locationService,
             IPermissionGroupService permissionGroupService) : base(context)
         {
@@ -52,17 +51,6 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
         public static string Name
         { get { return "Home"; } }
 
-        [HttpGet("[action]")]
-        public async Task<IActionResult> Import()
-        {
-            if (!await HasImportPermissionAsync())
-            {
-                return RedirectToUnauthorized();
-            }
-
-            return View();
-        }
-
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> Details(int id)
         {
@@ -70,8 +58,13 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
             {
                 LibraryProgram = await _libraryProgramService.GetAsync(id),
                 RegistrationChoice = "None",
-                ScheduledEvent = await _eventService.GetEventAsync(ScheduledEventType.Program, id)
             };
+
+            if (viewModel.LibraryProgram.ScheduledEventId != null)
+            {
+                viewModel.ScheduledEvent = await _eventService
+                    .GetEventAsync(viewModel.LibraryProgram.ScheduledEventId.Value);
+            }
 
             if (viewModel.LibraryProgram?.IsRegistrationRequired == true)
             {
@@ -81,6 +74,17 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
             }
 
             return View(viewModel);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Import()
+        {
+            if (!await HasImportPermissionAsync())
+            {
+                return RedirectToUnauthorized();
+            }
+
+            return View();
         }
 
         [HttpGet("")]
@@ -117,6 +121,28 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
             return View(viewModel);
         }
 
+        [HttpPost("[action]")]
+        public async Task<IActionResult> PublishEvent(int id)
+        {
+            var libraryProgram = await _libraryProgramService.GetAsync(id);
+
+            if (libraryProgram == null)
+            {
+                ShowAlertDanger("Unable to find that library program.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (libraryProgram.ScheduledEventId.HasValue)
+            {
+                ShowAlertWarning("Program already has a scheduled event.");
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var scheduledEvent = _libraryProgramService.CreateEventAsync(libraryProgram.Id);
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> UploadPrograms(ImportViewModel viewModel)
         {
@@ -138,8 +164,10 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
 
                     try
                     {
-                        var importResult = await _libraryProgramService
-                            .ImportAsync(CurrentUserId, tempFile, true || viewModel.PerformImport);
+                        var importResult = await _libraryProgramService.ImportAsync(CurrentUserId,
+                            tempFile,
+                            viewModel.PerformImport,
+                            viewModel.CreateEvents);
 
                         _logger.LogInformation("File {FileName} processed {Count} items in {ElapsedMs} ms",
                             viewModel.FileName,
