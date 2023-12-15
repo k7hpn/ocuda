@@ -10,6 +10,7 @@ namespace Ocuda.Promenade.Data
         {
         }
 
+        public DbSet<AgeGroup> AgeGroups { get; set; }
         public DbSet<CardDetail> CardDetails { get; }
         public DbSet<Card> Cards { get; }
         public DbSet<CarouselButtonLabel> CarouselButtonLabels { get; }
