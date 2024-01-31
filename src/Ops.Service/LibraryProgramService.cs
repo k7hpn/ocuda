@@ -14,6 +14,7 @@ using Ocuda.Ops.Service.Abstract;
 using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Repositories;
 using Ocuda.Ops.Service.Interfaces.Ops.Services;
+using Ocuda.Ops.Service.Interfaces.Promenade.Repositories;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Promenade.Models.Entities;
 using Ocuda.Utility.Exceptions;
@@ -25,12 +26,13 @@ namespace Ocuda.Ops.Service
 {
     public class LibraryProgramService : BaseService<LibraryProgramService>, ILibraryProgramService
     {
+        private const string ProgramAgeGroupIdAlreadyPresent = "Imported program ID {ImportProgramId} already contains Age Group ID {AgeGroupId}";
         private const string StatusFormatted = "On {RecordNumber}/{TotalRecords} ({Percent}%) {Elapsed:hh\\:mm\\:ss} elapsed, estimated: {EstimatedTotal:hh\\:mm\\:ss} total, {EstimatedRemaining:hh\\:mm\\:ss} remaining";
-
         private readonly IEventService _eventService;
         private readonly ILanguageService _languageService;
         private readonly ILibraryProgramRepository _libraryProgramRepository;
         private readonly ILocationService _locationService;
+        private readonly IScheduledEventAgeGroupRepository _scheduledEventAgeGroupRepository;
         private readonly ISegmentService _segmentService;
         private readonly IUserService _userService;
 
@@ -40,6 +42,7 @@ namespace Ocuda.Ops.Service
             ILanguageService languageService,
             ILibraryProgramRepository libraryProgramRepository,
             ILocationService locationService,
+            IScheduledEventAgeGroupRepository scheduledEventAgeGroupRepository,
             ISegmentService segmentService,
             IUserService userService) : base(logger, httpContextAccessor)
         {
@@ -47,12 +50,14 @@ namespace Ocuda.Ops.Service
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(libraryProgramRepository);
             ArgumentNullException.ThrowIfNull(locationService);
+            ArgumentNullException.ThrowIfNull(scheduledEventAgeGroupRepository);
             ArgumentNullException.ThrowIfNull(segmentService);
 
             _eventService = eventService;
             _languageService = languageService;
             _libraryProgramRepository = libraryProgramRepository;
             _locationService = locationService;
+            _scheduledEventAgeGroupRepository = scheduledEventAgeGroupRepository;
             _segmentService = segmentService;
             _userService = userService;
         }
@@ -60,14 +65,15 @@ namespace Ocuda.Ops.Service
         public async Task<ScheduledEvent> CreateEventAsync(int libraryProgramId)
         {
             var libraryProgram = await _libraryProgramRepository.FindAsync(libraryProgramId)
-                ?? throw new OcudaException($"Unable to find library program id {libraryProgramId}");
+                ?? throw new OcudaException($"Unable to find program id {libraryProgramId}");
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var titleSegment = await _segmentService
                 .GetBySegmentAndLanguageAsync(libraryProgram.TitleSegmentId, defaultLanguageId);
 
-            var slugBase = libraryProgram.StartDate.Year.ToString(CultureInfo.InvariantCulture)
+            var slugBase = libraryProgram.StartDate.Year.ToString("0000",
+                    CultureInfo.InvariantCulture)
                 + "-"
-                + libraryProgram.StartDate.Month.ToString(CultureInfo.InvariantCulture)
+                + libraryProgram.StartDate.Month.ToString("00", CultureInfo.InvariantCulture)
                 + "-"
                 + titleSegment.Text;
 
@@ -151,6 +157,7 @@ namespace Ocuda.Ops.Service
                 {
                     result.TotalRecords++;
                     Location location = null;
+                    var thisProgramAgeGroups = new List<int>();
                     if (!importProgram.IsOnline)
                     {
                         location = locations
@@ -220,7 +227,7 @@ namespace Ocuda.Ops.Service
                     {
                         if (userCache.TryGetValue(importProgram.ContactEmail.Trim(), out var id))
                         {
-                            program.CreatedBy = id;
+                            program.OwnedByUserId = id;
                         }
                         else
                         {
@@ -228,7 +235,7 @@ namespace Ocuda.Ops.Service
                                .LookupUserByEmailAsync(importProgram.ContactEmail.Trim());
                             if (userLookup != null)
                             {
-                                program.CreatedBy = userLookup.Id;
+                                program.OwnedByUserId = userLookup.Id;
                                 userCache.Add(importProgram.ContactEmail.Trim(), userLookup.Id);
                             }
                         }
@@ -244,7 +251,16 @@ namespace Ocuda.Ops.Service
                         var inDatabase = ageGroupLookup.SingleOrDefault(_ => _.Name == ageGroup);
                         if (inDatabase != null)
                         {
-                            program.AgeGroups.Add(inDatabase.Id);
+                            if (!thisProgramAgeGroups.Contains(inDatabase.Id))
+                            {
+                                thisProgramAgeGroups.Add(inDatabase.Id);
+                            }
+                            else
+                            {
+                                _logger.LogWarning(ProgramAgeGroupIdAlreadyPresent,
+                                    importProgram.Id,
+                                    inDatabase.Id);
+                            }
                         }
                         else
                         {
@@ -269,13 +285,23 @@ namespace Ocuda.Ops.Service
                             var addedAgeGroup = new AgeGroup
                             {
                                 Name = ageGroup,
-                                DisplayNameId = ageGroupSegment.Id
+                                SegmentId = ageGroupSegment.Id
                             };
                             if (performImport)
                             {
                                 addedAgeGroup = await _eventService
                                     .AddSaveAgeGroupAsync(addedAgeGroup);
-                                program.AgeGroups.Add(addedAgeGroup.Id);
+
+                                if (!thisProgramAgeGroups.Contains(addedAgeGroup.Id))
+                                {
+                                    thisProgramAgeGroups.Add(addedAgeGroup.Id);
+                                }
+                                else
+                                {
+                                    _logger.LogWarning(ProgramAgeGroupIdAlreadyPresent,
+                                        program.Id,
+                                        addedAgeGroup.Id);
+                                }
                             }
                             ageGroupLookup.Add(addedAgeGroup);
                         }
@@ -328,6 +354,20 @@ namespace Ocuda.Ops.Service
                             var scheduledEvent = await CreateEventAsync(program.Id);
                             await _libraryProgramRepository
                                 .UpdateScheduledEventIdAsync(program.Id, scheduledEvent.Id);
+
+                            foreach (var ageGroupId in thisProgramAgeGroups)
+                            {
+                                try
+                                {
+                                    await _scheduledEventAgeGroupRepository
+                                        .AddAsync(scheduledEvent.Id, ageGroupId);
+                                }
+                                catch (OcudaException oex)
+                                {
+                                    _logger.LogWarning("Insert failed: {ErrorMessage}",
+                                        oex.Message);
+                                }
+                            }
                         }
                     }
 

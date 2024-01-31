@@ -16,6 +16,7 @@ using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Utility.Exceptions;
 using Ocuda.Utility.Extensions;
+using Ocuda.Utility.Keys;
 
 namespace Ocuda.Ops.Controllers.Areas.Programs
 {
@@ -226,9 +227,9 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
 
         private async Task<bool> HasImportPermissionAsync()
         {
-            // TODO fix this permission lookup
-            return await HasAppPermissionAsync(_permissionGroupService,
-                ApplicationPermission.UserSync);
+            return !string.IsNullOrEmpty(UserClaim(ClaimType.SiteManager))
+                || await HasAppPermissionAsync(_permissionGroupService,
+                    ApplicationPermission.ImportPrograms);
         }
     }
 }

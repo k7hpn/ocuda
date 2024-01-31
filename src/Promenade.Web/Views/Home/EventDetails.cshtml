@@ -6,5 +6,15 @@
         <p>@Model.ScheduledEvent.StartDate.ToString("f"), @Model.ScheduledEvent.DurationText</p>
 
         <p>@Model.ScheduledEvent.Description</p>
+
+        @if (Model.ScheduledEvent.AgeGroups?.Count > 0)
+        {
+            <ul>
+                @foreach (var ageGroup in Model.ScheduledEvent.AgeGroups)
+                {
+                    <li>@ageGroup</li>
+                }
+            </ul>
+        }
     </div>
 </div>

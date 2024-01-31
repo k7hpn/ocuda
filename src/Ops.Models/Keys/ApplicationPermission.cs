@@ -13,6 +13,7 @@
         public static readonly string EmediaManagement = "EmediaManagement";
         public static readonly string EventManagement = "EventManagement";
         public static readonly string FormManagement = "FormManagement";
+        public static readonly string ImportPrograms = "ImportPrograms";
         public static readonly string IntranetFrontPageManagement = "IntranetFrontPageManagement";
         public static readonly string MultiUserAccount = "MultiUserAccount";
         public static readonly string NavigationManagement = "NavigationManagement";

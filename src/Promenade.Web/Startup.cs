@@ -386,6 +386,8 @@ namespace Ocuda.Promenade.Web
             services.AddScoped<Controllers.Filters.LayoutFilter>();
 
             // repositories
+            services.AddScoped<Service.Interfaces.Repositories.IAgeGroupRepository,
+                Data.Promenade.AgeGroupRepository>();
             services.AddScoped<Service.Interfaces.Repositories.ICardDetailRepository,
                 Data.Promenade.CardDetailRepository>();
             services.AddScoped<Service.Interfaces.Repositories.ICardRepository,
@@ -466,6 +468,8 @@ namespace Ocuda.Promenade.Web
                 Data.Promenade.ProductInventoryRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IProductRepository,
                 Data.Promenade.ProductRepository>();
+            services.AddScoped<Service.Interfaces.Repositories.IScheduledEventAgeGroupRepository,
+                Data.Promenade.ScheduledEventAgeGroupRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IScheduledEventRepository,
                 Data.Promenade.ScheduledEventRepository>();
             services.AddScoped<Service.Interfaces.Repositories.IScheduleRequestLimitRepository,

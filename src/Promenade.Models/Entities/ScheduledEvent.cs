@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,14 @@ namespace Ocuda.Promenade.Models.Entities
     [Index(nameof(Slug), IsUnique = true)]
     public class ScheduledEvent
     {
+        public ScheduledEvent()
+        {
+            AgeGroups = new List<string>();
+        }
+
+        [NotMapped]
+        public ICollection<string> AgeGroups { get; }
+
         [NotMapped]
         public string Description { get; set; }
 
@@ -51,7 +60,7 @@ namespace Ocuda.Promenade.Models.Entities
 
         public int? LocationDescriptionId { get; set; }
 
-        // tbd job that switches ispublished after publishon
+        // TODO job that switches ispublished after publishon
         // where publishon <= now and !ispublished
         public DateTime? PublishOn { get; set; }
 

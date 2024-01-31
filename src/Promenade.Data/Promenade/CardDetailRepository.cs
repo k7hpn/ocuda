@@ -12,7 +12,6 @@ namespace Ocuda.Promenade.Data.Promenade
 {
     public class CardDetailRepository
             : GenericRepository<PromenadeContext, CardDetail>, ICardDetailRepository
-
     {
         public CardDetailRepository(Repository<PromenadeContext> repositoryFacade,
             ILogger<CardDetailRepository> logger) : base(repositoryFacade, logger)

@@ -9,6 +9,7 @@
 
         /// <summary>
         /// Status of a digital display, {0} is the digital display id
+        ///
         /// </summary>
         public static readonly string OpsDigitalDisplayStatus = "dd.{0}";
 
@@ -74,6 +75,11 @@
         /// The filename of the user's profile picture
         /// </summary>
         public static readonly string OpsUserProfilePicture = "user.picture.{0}";
+
+        /// <summary>
+        /// Cached segment id, looked up by age group id which is {0}
+        /// </summary>
+        public static readonly string PromAgeGroupIdToSegmentId = "agesegment.{0}";
 
         /// <summary>
         /// Cached card, {0} is the language id and {1} is the card id

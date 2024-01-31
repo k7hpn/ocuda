@@ -508,16 +508,18 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.ProductLocationInventoryRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IProductRepository,
                 Data.Promenade.ProductRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventAgeGroupRepository,
+                Data.Promenade.ScheduledEventAgeGroupRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRepository,
+                Data.Promenade.ScheduledEventRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventLocationRepository,
+                Data.Promenade.ScheduledEventLocationRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduleRequestLimitRepository,
                 Data.Promenade.ScheduleRequestLimitRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduleRequestRepository,
                 Data.Promenade.ScheduleRequestRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduleRequestSubjectRepository,
                 Data.Promenade.ScheduleRequestSubjectRepository>();
-            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRepository,
-                Data.Promenade.ScheduledEventRepository>();
-            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventLocationRepository,
-                Data.Promenade.ScheduledEventLocationRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentRepository,
                 Data.Promenade.SegmentRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.ISegmentTextRepository,
