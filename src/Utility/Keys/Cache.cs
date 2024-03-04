@@ -77,6 +77,11 @@
         public static readonly string OpsUserProfilePicture = "user.picture.{0}";
 
         /// <summary>
+        /// A count of how many volunteer emails have been sent recently, {0} is the email addrress
+        /// </summary>
+        public static readonly string OpsVolunteerEmails = "email.notification.volunteer.{0}";
+
+        /// <summary>
         /// Cached segment id, looked up by age group id which is {0}
         /// </summary>
         public static readonly string PromAgeGroupIdToSegmentId = "agesegment.{0}";

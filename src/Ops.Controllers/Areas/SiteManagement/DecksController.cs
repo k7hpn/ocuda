@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ImageOptimApi;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
@@ -31,16 +32,20 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
         private static readonly string[] ValidImageExtensions = new[] { ".jpg", ".png" };
 
         private readonly IDeckService _deckService;
+        private readonly IImageService _imageService;
         private readonly ILanguageService _languageService;
         private readonly IPermissionGroupService _permissionGroupService;
 
         public DecksController(ServiceFacades.Controller<DecksController> context,
             IDeckService deckService,
+            IImageService imageService,
             ILanguageService languageService,
             IPermissionGroupService permissionGroupService) : base(context)
         {
             _deckService = deckService
                 ?? throw new ArgumentNullException(nameof(deckService));
+            _imageService = imageService
+                ?? throw new ArgumentNullException(nameof(imageService));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
             _permissionGroupService = permissionGroupService
@@ -116,60 +121,72 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             }
             else
             {
-                using var ms = new MemoryStream();
-                await viewModel.CardImage.CopyToAsync(ms);
-                var imageBytes = ms.ToArray();
+                byte[] imageBytes = null;
+                OptimizedImageResult optimized;
 
-                using var image = SixLabors.ImageSharp.Image.Load(imageBytes);
-                if (image.Width != CardImageWidth)
+                try
                 {
-                    issues.Add($"Card images must be {CardImageWidth} pixels wide.");
+                    optimized = await _imageService.OptimizeAsync(viewModel.CardImage);
+                    imageBytes = optimized.File;
                 }
-                else
+                catch (ParameterException pex)
                 {
-                    var language = await _languageService
-                        .GetActiveByIdAsync(viewModel.CardDetail.LanguageId);
-                    languageName = language.Name;
+                    issues.Add($"Error optimizing uploaded image: {pex.Message}");
+                }
 
-                    var currentCard = await _deckService
-                        .GetCardDetailsAsync(viewModel.CardDetail.CardId,
-                            viewModel.CardDetail.LanguageId);
-
-                    var currentFilename = Path.GetFileName(currentCard.Filename);
-
-                    // file is the same then replace the old one
-                    bool replaceImage = currentFilename?.Equals(viewModel.CardImage.FileName,
-                        StringComparison.OrdinalIgnoreCase) == true;
-
-                    // filename is different but there is an old image, delete it
-                    if (!replaceImage && !string.IsNullOrEmpty(currentFilename))
+                if (imageBytes != null)
+                {
+                    using var image = SixLabors.ImageSharp.Image.Load(imageBytes);
+                    if (image.Width != CardImageWidth)
                     {
-                        var cardsUsingImage = await _deckService
-                            .CardsUsingImageAsync(currentCard.Filename);
-
-                        if (cardsUsingImage == 1)
-                        {
-                            _logger.LogInformation("Removing card image file {Filename} as it is no longer used.",
-                                currentFilename);
-                            await _deckService.RemoveCardImageAsync(currentCard.CardId,
-                                currentCard.LanguageId);
-                        }
+                        issues.Add($"Card images must be {CardImageWidth} pixels wide.");
                     }
+                    else
+                    {
+                        var language = await _languageService
+                            .GetActiveByIdAsync(viewModel.CardDetail.LanguageId);
+                        languageName = language.Name;
 
-                    // get an approved filename with path
-                    var filename = await _deckService.GetUploadImageFilePathAsync(languageName,
-                        viewModel.CardImage.FileName,
-                        replaceImage);
+                        var currentCard = await _deckService
+                            .GetCardDetailsAsync(viewModel.CardDetail.CardId,
+                                viewModel.CardDetail.LanguageId);
 
-                    // copy file
-                    await System.IO.File.WriteAllBytesAsync(filename, ms.ToArray());
+                        var currentFilename = Path.GetFileName(currentCard.Filename);
 
-                    // update detail
-                    currentCard.Filename = Path.GetFileName(filename);
-                    currentCard.AltText = viewModel.AltText;
-                    await _deckService.UpdateCardAsync(currentCard.CardId,
-                        currentCard.LanguageId,
-                        currentCard);
+                        // file is the same then replace the old one
+                        bool replaceImage = currentFilename?.Equals(viewModel.CardImage.FileName,
+                            StringComparison.OrdinalIgnoreCase) == true;
+
+                        // filename is different but there is an old image, delete it
+                        if (!replaceImage && !string.IsNullOrEmpty(currentFilename))
+                        {
+                            var cardsUsingImage = await _deckService
+                                .CardsUsingImageAsync(currentCard.Filename);
+
+                            if (cardsUsingImage == 1)
+                            {
+                                _logger.LogInformation("Removing card image file {Filename} as it is no longer used.",
+                                    currentFilename);
+                                await _deckService.RemoveCardImageAsync(currentCard.CardId,
+                                    currentCard.LanguageId);
+                            }
+                        }
+
+                        // get an approved filename with path
+                        var filename = await _deckService.GetUploadImageFilePathAsync(languageName,
+                            viewModel.CardImage.FileName,
+                            replaceImage);
+
+                        // copy file
+                        await System.IO.File.WriteAllBytesAsync(filename, imageBytes);
+
+                        // update detail
+                        currentCard.Filename = Path.GetFileName(filename);
+                        currentCard.AltText = viewModel.AltText;
+                        await _deckService.UpdateCardAsync(currentCard.CardId,
+                            currentCard.LanguageId,
+                            currentCard);
+                    }
                 }
             }
 
@@ -271,6 +288,17 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                 ?? languages.Single(_ => _.IsDefault);
 
             var cards = await _deckService.GetCardDetailsByDeckAsync(deckId, selectedLanguage.Id);
+
+            if (cards != null)
+            {
+                foreach (var card in cards)
+                {
+                    if (!string.IsNullOrEmpty(card.Footer))
+                    {
+                        card.Footer = CommonMark.CommonMarkConverter.Convert(card.Footer);
+                    }
+                }
+            }
 
             return View(new DetailViewModel
             {
@@ -377,7 +405,8 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             if (string.IsNullOrEmpty(viewModel.CardDetail.AltText?.Trim())
                 && string.IsNullOrEmpty(viewModel.CardDetail.Header?.Trim())
                 && string.IsNullOrEmpty(viewModel.CardDetail.Link?.Trim())
-                && string.IsNullOrEmpty(viewModel.CardDetail.Text?.Trim()))
+                && string.IsNullOrEmpty(viewModel.CardDetail.Text?.Trim())
+                && string.IsNullOrEmpty(viewModel.CardDetail.Footer?.Trim()))
             {
                 ShowAlertWarning("Cannot create empty card.");
                 return RedirectToAction(nameof(Detail), new

@@ -17,7 +17,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -75,6 +75,10 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Filename")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Footer")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -269,6 +273,10 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Footer")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -1644,6 +1652,12 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
                     b.Property<int?>("FollowupEmailSetupId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrderBy")
+                        .HasColumnType("int");
+
                     b.Property<int?>("RelatedEmailSetupId")
                         .HasColumnType("int");
 
@@ -1916,6 +1930,9 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.Property<bool>("IsDisabled")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("NotfiyStaffOverflowEmailSetupId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("NotifyStaffEmailSetupId")
                         .HasColumnType("int");
