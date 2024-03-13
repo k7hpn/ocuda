@@ -6,6 +6,7 @@ namespace Ocuda.Promenade.Data
 {
     public abstract class PromenadeContext : Utility.Data.DbContextBase, IDataProtectionKeyContext
     {
+        // when updating this file, also update src/Ops.Data/PromenadeContext.cs
         protected PromenadeContext(DbContextOptions options) : base(options)
         {
         }
@@ -59,6 +60,8 @@ namespace Ocuda.Promenade.Data
         public DbSet<Product> Products { get; }
         public DbSet<ScheduledEventAgeGroup> ScheduledEventAgeGroups { get; }
         public DbSet<ScheduledEventLocation> ScheduledEventLocations { get; set; }
+        public DbSet<ScheduledEventRegistrationHistory> ScheduledEventRegistrationHistories { get; set; }
+        public DbSet<ScheduledEventRegistration> ScheduledEventRegistrations { get; set; }
         public DbSet<ScheduledEventRelationship> ScheduledEventRelationships { get; }
         public DbSet<ScheduledEvent> ScheduledEvents { get; }
         public DbSet<ScheduleRequest> ScheduleRequest { get; set; }

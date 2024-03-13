@@ -9,6 +9,7 @@ using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Promenade.Models.Entities;
+using Ocuda.Utility.Abstract;
 
 namespace Ocuda.Ops.Controllers.Areas.Events
 {
@@ -16,28 +17,52 @@ namespace Ocuda.Ops.Controllers.Areas.Events
     [Route("[area]/[controller]")]
     public class HomeController : BaseController<HomeController>
     {
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IEventService _eventService;
         private readonly IPermissionGroupService _permissionGroupService;
+        private readonly ILibraryProgramService _programService;
+        private readonly IUserService _userService;
 
         public HomeController(Controller<HomeController> context,
+            IDateTimeProvider dateTimeProvider,
             IEventService eventService,
-            IPermissionGroupService permissionGroupService) : base(context)
+            ILibraryProgramService programService,
+            IPermissionGroupService permissionGroupService,
+            IUserService userService) : base(context)
         {
+            ArgumentNullException.ThrowIfNull(dateTimeProvider);
             ArgumentNullException.ThrowIfNull(eventService);
             ArgumentNullException.ThrowIfNull(permissionGroupService);
+            ArgumentNullException.ThrowIfNull(programService);
+            ArgumentNullException.ThrowIfNull(userService);
 
+            _dateTimeProvider = dateTimeProvider;
             _eventService = eventService;
             _permissionGroupService = permissionGroupService;
+            _programService = programService;
+            _userService = userService;
         }
 
         public static string Area
-        { get { return nameof(SiteManagement); } }
+        { get { return nameof(Events); } }
 
         public static string Name
         { get { return "Home"; } }
 
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> Details(int id)
+        {
+            var viewModel = new DetailsViewModel
+            {
+                Now = _dateTimeProvider.Now,
+                ScheduledEvent = await _eventService.GetEventAsync(id),
+                ScheduledEventRegistrations = await _eventService.GetEventRegistrationsAsync(id)
+            };
+
+            return View(viewModel);
+        }
+
         [HttpGet("")]
-        [HttpGet("[action]/{page}")]
         public async Task<IActionResult> Index(int page)
         {
             page = page == 0 ? 1 : page;
@@ -64,6 +89,47 @@ namespace Ocuda.Ops.Controllers.Areas.Events
             }
 
             return View(viewModel);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> Registration(Guid id)
+        {
+            return View(new RegistrationViewModel
+            {
+                ScheduledEventRegistration = await _eventService.GetEventRegistrationAsync(id),
+                ScheduledEventRegistrationHistories = await _eventService
+                    .GetRegistrationHistoryAsync(id)
+            });
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> ViewParent(int id)
+        {
+            var scheduledEvent = await _eventService.GetEventAsync(id);
+            if (scheduledEvent == null)
+            {
+                return StatusCode(404);
+            }
+
+            switch (scheduledEvent.ScheduledEventType)
+            {
+                case Utility.Models.ScheduledEventType.Program:
+                    var programId = await _programService.GetIdByEventIdAsync(scheduledEvent.Id);
+                    if (!programId.HasValue)
+                    {
+                        return StatusCode(404);
+                    }
+                    return RedirectToAction(nameof(Programs.HomeController.Details),
+                        Programs.HomeController.Name,
+                        new
+                        {
+                            Programs.HomeController.Area,
+                            Id = programId
+                        });
+
+                default:
+                    return StatusCode(501);
+            }
         }
     }
 }

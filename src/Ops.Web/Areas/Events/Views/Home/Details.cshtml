@@ -1,0 +1,90 @@
+﻿@using Ocuda.Ops.Controllers.Areas.Events.ViewModels
+@model DetailsViewModel
+
+<div class="d-flex justify-content-between mb-2">
+    <h1>
+        Events <small>@Model.ScheduledEvent.Title</small>
+    </h1>
+    <div class="pt-2">
+        <a class="btn btn-outline-primary"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.ViewParent))"
+           asp-route-id="@Model.ScheduledEvent.Id">
+            View @Model.ScheduledEvent.ScheduledEventType
+        </a>
+        <a class="btn btn-outline-dark ms-2"
+           asp-controller="@Ocuda.Ops.Controllers.Areas.Events.HomeController.Name"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.Index))">Back</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-8 offset-2">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Event title</th>
+                <td>@Model.ScheduledEvent.Title</td>
+            </tr>
+            <tr>
+                <th>Event type</th>
+                <td>
+                    <a asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.ViewParent))"
+                       asp-route-id="@Model.ScheduledEvent.Id">@Model.ScheduledEvent.ScheduledEventType</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Event date</th>
+                <td>@Model.ScheduledEvent.StartDate</td>
+            </tr>
+            <tr>
+                <th>Event duration</th>
+                <td>
+                    @if (Model.ScheduledEvent.IsAllDay)
+                    {
+                        @:All day
+                    }
+                    else
+                    {
+                        @Model.ScheduledEvent.DurationMinutes
+                        @:minutes
+                    }
+                </td>
+            </tr>
+        </table>
+        @if (Model.ScheduledEvent.MaxPeople > 0)
+        {
+            <h2>Registrations</h2>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Registered At</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                </tr>
+                @if (Model.ScheduledEventRegistrations?.Count() > 0)
+                {
+                    @foreach (var registration in Model.ScheduledEventRegistrations)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.Registration))"
+                                   asp-route-id="@registration.Id">
+                                    @registration.RegisteredAt
+                                </a>
+                            </td>
+                            <td>@registration.FirstName</td>
+                            <td>@registration.LastName</td>
+                            <td>@registration.Phone</td>
+                            <td>@registration.Email</td>
+                            <td>@(registration.RegisteredByStaff ? "Staff registered" : "Self-registered")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="7"><em>No registrations as of @Model.Now.</em></td></tr>
+                }
+            </table>
+        }
+    </div>
+</div>

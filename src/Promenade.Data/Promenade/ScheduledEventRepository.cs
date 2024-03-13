@@ -42,6 +42,7 @@ namespace Ocuda.Promenade.Data.Promenade
                     DurationMinutes = _.ScheduledEvent.DurationMinutes,
                     Id = _.ScheduledEvent.Id,
                     IsAllDay = _.ScheduledEvent.IsAllDay,
+                    MaxPeople = _.ScheduledEvent.MaxPeople,
                     Slug = _.ScheduledEvent.Slug,
                     StartDate = _.ScheduledEvent.StartDate,
                     TitleSegmentId = _.ScheduledEvent.TitleSegmentId

@@ -43,9 +43,8 @@ namespace Ocuda.Ops.Data
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<IncidentStaff> IncidentStaffs { get; set; }
         public DbSet<IncidentType> IncidentTypes { get; set; }
-        public DbSet<LibraryProgram> LibraryPrograms {get;set;}
-
         public DbSet<LibraryProgramRelationship> LibraryProgramRelationships { get; set; }
+        public DbSet<LibraryProgram> LibraryPrograms { get; set; }
         public DbSet<LinkLibrary> LinkLibraries { get; set; }
         public DbSet<Link> Links { get; set; }
         public DbSet<PermissionGroupApplication> PermissionGroupApplication { get; set; }

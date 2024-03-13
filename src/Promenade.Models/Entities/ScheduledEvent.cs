@@ -8,11 +8,6 @@ using Ocuda.Utility.Models;
 
 namespace Ocuda.Promenade.Models.Entities
 {
-    // announcement
-    // closure (item connects to one or more locationhoursoverrides)
-    // program
-    // podca1t
-
     [Index(nameof(Slug), IsUnique = true)]
     public class ScheduledEvent
     {
@@ -60,9 +55,17 @@ namespace Ocuda.Promenade.Models.Entities
 
         public int? LocationDescriptionId { get; set; }
 
+        public int MaxPeople { get; set; }
+
         // TODO job that switches ispublished after publishon
         // where publishon <= now and !ispublished
         public DateTime? PublishOn { get; set; }
+
+        [NotMapped]
+        public int? RegistrationCount { get; set; }
+
+        [NotMapped]
+        public int? Registrations { get; set; }
 
         [Required]
         public ScheduledEventType ScheduledEventType { get; set; }

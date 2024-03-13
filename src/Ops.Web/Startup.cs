@@ -522,6 +522,10 @@ namespace Ocuda.Ops.Web
                 Data.Promenade.ProductRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventAgeGroupRepository,
                 Data.Promenade.ScheduledEventAgeGroupRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRegistrationHistoryRepository,
+                Data.Promenade.ScheduledEventRegistrationHistoryRepository>();
+            services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRegistrationRepository,
+                Data.Promenade.ScheduledEventRegistrationRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventRepository,
                 Data.Promenade.ScheduledEventRepository>();
             services.AddScoped<Service.Interfaces.Promenade.Repositories.IScheduledEventLocationRepository,

@@ -89,7 +89,6 @@ namespace Ocuda.Ops.Controllers.Areas.Programs
         }
 
         [HttpGet("")]
-        [HttpGet("{page}")]
         public async Task<IActionResult> Index(int page)
         {
             page = page == 0 ? 1 : page;

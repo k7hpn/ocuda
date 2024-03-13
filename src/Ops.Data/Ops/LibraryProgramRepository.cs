@@ -21,6 +21,15 @@ namespace Ocuda.Ops.Data.Ops
         {
         }
 
+        public async Task<int?> GetIdByEventIdAsync(int scheduledEventId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.ScheduledEventId == scheduledEventId)
+                .Select(_ => _.Id)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<CollectionWithCount<LibraryProgram>> PaginateAsync(BaseFilter filter)
         {
             ArgumentNullException.ThrowIfNull(filter);

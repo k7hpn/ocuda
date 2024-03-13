@@ -18,6 +18,7 @@ namespace Ocuda.Promenade.Service
         private readonly IAgeGroupRepository _ageGroupRepository;
         private readonly IOcudaCache _cache;
         private readonly IScheduledEventAgeGroupRepository _scheduledEventAgeGroupRepository;
+        private readonly IScheduledEventRegistrationRepository _scheduledEventRegistrationRepository;
         private readonly IScheduledEventRepository _scheduledEventRepository;
         private readonly SegmentService _segmentService;
 
@@ -26,12 +27,14 @@ namespace Ocuda.Promenade.Service
             IAgeGroupRepository ageGroupRepository,
             IOcudaCache cache,
             IScheduledEventAgeGroupRepository scheduledEventAgeGroupRepository,
+            IScheduledEventRegistrationRepository scheduledEventRegistrationRepository,
             IScheduledEventRepository scheduledEventRepository,
             SegmentService segmentService) : base(logger, dateTimeProvider)
         {
             ArgumentNullException.ThrowIfNull(ageGroupRepository);
             ArgumentNullException.ThrowIfNull(cache);
             ArgumentNullException.ThrowIfNull(scheduledEventAgeGroupRepository);
+            ArgumentNullException.ThrowIfNull(scheduledEventRegistrationRepository);
             ArgumentNullException.ThrowIfNull(scheduledEventRepository);
             ArgumentNullException.ThrowIfNull(segmentService);
 
@@ -39,6 +42,7 @@ namespace Ocuda.Promenade.Service
             _cache = cache;
             _scheduledEventAgeGroupRepository = scheduledEventAgeGroupRepository;
             _scheduledEventRepository = scheduledEventRepository;
+            _scheduledEventRegistrationRepository = scheduledEventRegistrationRepository;
             _segmentService = segmentService;
         }
 
@@ -46,6 +50,13 @@ namespace Ocuda.Promenade.Service
         {
             // TODO caching
             var scheduledEvent = await _scheduledEventRepository.GetAsync(slug);
+
+            if (scheduledEvent.MaxPeople > 0)
+            {
+                // see how many signups we actually have
+                scheduledEvent.Registrations = await _scheduledEventRegistrationRepository
+                    .GetCountAsync(scheduledEvent.Id);
+            }
 
             scheduledEvent.Title = await GetSegmentTestAsync(_segmentService,
                 forceReload,
@@ -87,6 +98,12 @@ namespace Ocuda.Promenade.Service
 
             foreach (var upcomingEvent in upcomingEvents)
             {
+                if (upcomingEvent.MaxPeople > 0)
+                {
+                    upcomingEvent.Registrations = await _scheduledEventRegistrationRepository
+                        .GetCountAsync(upcomingEvent.Id);
+                }
+
                 var description = await _segmentService
                     .GetSegmentTextBySegmentIdAsync(upcomingEvent.DescriptionSegmentId,
                         forceReload);

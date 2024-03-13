@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ocuda.Ops.Models.Entities;
 using Ocuda.Ops.Service.Filters;
@@ -16,6 +17,17 @@ namespace Ocuda.Ops.Service.Interfaces.Promenade.Services
         public Task<ICollection<AgeGroup>> GetAgeGroupLookupAsync();
 
         public Task<ScheduledEvent> GetEventAsync(int eventId);
+
+        public Task<ScheduledEventRegistration> GetEventRegistrationAsync(Guid id);
+
+        public Task<IEnumerable<ScheduledEventRegistration>>
+            GetEventRegistrationsAsync(int eventId);
+
+        public Task<IDictionary<int, int>>
+            GetRegistrationCountAsync(IEnumerable<int> registrationEventIds);
+
+        public Task<IEnumerable<ScheduledEventRegistrationHistory>>
+            GetRegistrationHistoryAsync(Guid scheduledEventRegistrationId);
 
         public Task<bool> IsSlugInUseAsync(string slug);
 

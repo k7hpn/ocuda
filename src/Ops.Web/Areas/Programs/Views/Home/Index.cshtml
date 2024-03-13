@@ -37,6 +37,7 @@ else
                 <th>Date</th>
                 <th>Duration</th>
                 <th>Location</th>
+                <th>Registration</th>
                 <th>Owned by</th>
                 <th></th>
             </tr>
@@ -60,7 +61,6 @@ else
                             }
                         </a>
                     </td>
-
                     <td>
                         @program.StartDate.ToString("g")
                     </td>
@@ -80,7 +80,15 @@ else
                         }
                     </td>
                     <td>
-                        @if (program.OwnedByUser != null && !program.OwnedByUser.IsSysadmin)
+                        @if (program.MaxPeople > 0)
+                        {
+                            @(program.RegistrationCount ?? 0)
+                            @:/
+                            @program.MaxPeople
+                        }
+                    </td>
+                    <td>
+                        @if (program.OwnedByUser?.IsSysadmin == false && program.OwnedByUser?.IsDeleted == false)
                         {
                             <a asp-controller="@Ocuda.Ops.Controllers.ProfileController.Name"
                                asp-action="@nameof(Ocuda.Ops.Controllers.ProfileController.Index)"

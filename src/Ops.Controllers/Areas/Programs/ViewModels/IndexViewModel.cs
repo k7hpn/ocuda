@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Ocuda.Ops.Models.Entities;
 using Ocuda.Utility.Models;
 
@@ -9,7 +8,7 @@ namespace Ocuda.Ops.Controllers.Areas.Programs.ViewModels
     {
         public IndexViewModel()
         {
-            LibraryPrograms = new List<LibraryProgram>();
+            LibraryPrograms = [];
             LocationNames = new Dictionary<int, string>();
         }
 

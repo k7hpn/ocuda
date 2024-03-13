@@ -12,7 +12,9 @@ namespace Ocuda.Ops.Service.Interfaces.Ops.Services
 
         public Task<LibraryProgram> GetAsync(int id);
 
-        public Task<Ocuda.Ops.Models.Portable.ImportResult> ImportAsync(int userId,
+        public Task<int?> GetIdByEventIdAsync(int scheduledEventId);
+
+        public Task<Ocuda.Ops.Models.Portable.ImportResult> ImportAsync(int importUserId,
             string filename,
             bool performImport,
             bool createEvents);

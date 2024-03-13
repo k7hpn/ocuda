@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using Ocuda.Utility.Helpers;
 
 namespace Ocuda.Ops.Models.Entities
 {
     public class LibraryProgram : Abstract.BaseEntity
     {
-        // DONE list of ints to agegroups
-        // DONE program id related to other programid table
-        // int link to scheduledeventtype -> move out to global namespace?
-
         public LibraryProgram()
         {
             AgeGroups = new List<int>();
@@ -75,13 +70,18 @@ namespace Ocuda.Ops.Models.Entities
         public string LocationName { get; set; }
 
         public int? MaxAgeMonths { get; set; }
-        public int? MaxPeople { get; set; }
+        public int MaxPeople { get; set; }
         public int? MaxWaitList { get; set; }
+
         public int? MinAgeMonths { get; set; }
+
         public User OwnedByUser { get; set; }
 
         [ForeignKey(nameof(OwnedByUser))]
         public int OwnedByUserId { get; set; }
+
+        [NotMapped]
+        public int? RegistrationCount { get; set; }
 
         public int? ScheduledEventId { get; set; }
         public DateTime? SignUpEnd { get; set; }
@@ -102,6 +102,7 @@ namespace Ocuda.Ops.Models.Entities
         public int TitleSegmentId { get; set; }
 
         public int? TotalAttendance { get; set; }
+
         public string Type { get; set; } = string.Empty;
     }
 }

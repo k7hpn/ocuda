@@ -7,6 +7,12 @@
 
         <p>@Model.ScheduledEvent.Description</p>
 
+        @if(Model.ScheduledEvent.MaxPeople > 0)
+        {
+            <p>You must register to attend this event.</p>
+            <p>@Model.ScheduledEvent.Registrations of @Model.ScheduledEvent.MaxPeople slots full.</p>
+        }
+
         @if (Model.ScheduledEvent.AgeGroups?.Count > 0)
         {
             <ul>

@@ -127,6 +127,18 @@
                         <div class="card-body">
                             @scheduledEvent.Description
                         </div>
+                        @if (scheduledEvent.MaxPeople > 0)
+                        {
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    Registered event:
+                                    @scheduledEvent.Registrations
+                                    of
+                                    @scheduledEvent.MaxPeople
+                                    slots taken
+                                </li>
+                            </ul>
+                        }
                         <div class="card-footer d-flex">
                             <div class="flex-grow-1">@scheduledEvent.StartDate.ToString("g")</div>
                             <div>@scheduledEvent.DurationText</div>

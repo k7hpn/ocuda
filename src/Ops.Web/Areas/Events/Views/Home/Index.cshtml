@@ -13,19 +13,47 @@
 
 @if (Model.ScheduledEvents?.Count > 0)
 {
-    <table class="table table-sm table-bordered">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Registrations</th>
                 <th>Published</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var scheduledEvent in Model.ScheduledEvents)
             {
                 <tr>
-                    <td>@scheduledEvent.Title</td>
+                    <td>
+                        <a asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.Details))"
+                           asp-route-id="@scheduledEvent.Id">
+                            @scheduledEvent.Title
+                        </a>
+                    </td>
+                    <td>
+                        @scheduledEvent.StartDate
+                    </td>
+                    <td>
+                        <a asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.ViewParent))"
+                           asp-route-id="@scheduledEvent.Id">
+                            @scheduledEvent.ScheduledEventType
+                        </a>
+                    </td>
+                    <td>
+                        @if (scheduledEvent.MaxPeople > 0)
+                        {
+                            @(scheduledEvent.RegistrationCount ?? 0)
+                            @:/
+                            @scheduledEvent.MaxPeople
+                        }
+                        else
+                        {
+                            @:&nbsp;
+                        }
+                    </td>
                     <td>
                         @if (scheduledEvent.IsPublished)
                         {
@@ -33,7 +61,15 @@
                         }
                         else
                         {
-                            <span class="fa-regular fa-circle-xmark"></span>
+                            if (scheduledEvent.PublishOn.HasValue)
+                            {
+                                <span class="fa-regular fa-clock"
+                                      title="Scheduled to publish at @scheduledEvent.PublishOn"></span>
+                            }
+                            else
+                            {
+                                <span class="fa-regular fa-circle-xmark"></span>
+                            }
                         }
                     </td>
                 </tr>

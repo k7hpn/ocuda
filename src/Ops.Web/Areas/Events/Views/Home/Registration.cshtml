@@ -1,0 +1,81 @@
+﻿@using Ocuda.Ops.Controllers
+@using Ocuda.Ops.Controllers.Areas.Events.ViewModels
+@model RegistrationViewModel
+
+<div class="d-flex justify-content-between mb-2">
+    <h1>
+        Registration Details
+    </h1>
+    <div class="pt-2">
+        <a class="btn btn-outline-dark"
+           asp-controller="@Ocuda.Ops.Controllers.Areas.Events.HomeController.Name"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.Details))"
+           asp-route-id="@Model.ScheduledEventRegistration.ScheduledEventId">Back</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-8 offset-2">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>First name</th>
+                <td>@Model.ScheduledEventRegistration.FirstName</td>
+            </tr>
+            <tr>
+                <th>Last name</th>
+                <td>@Model.ScheduledEventRegistration.LastName</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>@Model.ScheduledEventRegistration.Phone</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@Model.ScheduledEventRegistration.Email</td>
+            </tr>
+            <tr>
+                <th>Registered by</th>
+                <td>
+                    @(Model.ScheduledEventRegistration.RegisteredByStaff ? "Staff registered" : "Self-registered")
+                </td>
+            </tr>
+        </table>
+        <h2>Registration History</h2>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Created at</th>
+                <th>Staff member</th>
+                <th>Notes</th>
+            </tr>
+            @if (Model.ScheduledEventRegistrationHistories?.Any() == true)
+            {
+                @foreach (var historyRecord in Model.ScheduledEventRegistrationHistories)
+                {
+                    <tr>
+                        <td>@historyRecord.CreatedAt</td>
+                        <td>
+                            @if (historyRecord.StaffUser?.IsSysadmin == false && historyRecord.StaffUser?.IsDeleted == false)
+                            {
+                                <a asp-controller="@Ocuda.Ops.Controllers.ProfileController.Name"
+                                   asp-action="@nameof(Ocuda.Ops.Controllers.ProfileController.Index)"
+                                   asp-route-id="@historyRecord.StaffUser.Username"
+                                   target="_blank">@historyRecord.StaffUser.Name</a>
+                            }
+                            else
+                            {
+                                @historyRecord.StaffUser?.Name
+                            }
+                        </td>
+                        <td>@historyRecord.Notes</td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3"><em>No registration history.</em></td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

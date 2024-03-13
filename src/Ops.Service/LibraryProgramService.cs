@@ -17,6 +17,7 @@ using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Repositories;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Promenade.Models.Entities;
+using Ocuda.Utility.Abstract;
 using Ocuda.Utility.Exceptions;
 using Ocuda.Utility.Extensions;
 using Ocuda.Utility.Models;
@@ -28,36 +29,48 @@ namespace Ocuda.Ops.Service
     {
         private const string ProgramAgeGroupIdAlreadyPresent = "Imported program ID {ImportProgramId} already contains Age Group ID {AgeGroupId}";
         private const string StatusFormatted = "On {RecordNumber}/{TotalRecords} ({Percent}%) {Elapsed:hh\\:mm\\:ss} elapsed, estimated: {EstimatedTotal:hh\\:mm\\:ss} total, {EstimatedRemaining:hh\\:mm\\:ss} remaining";
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IEventService _eventService;
         private readonly ILanguageService _languageService;
         private readonly ILibraryProgramRepository _libraryProgramRepository;
         private readonly ILocationService _locationService;
         private readonly IScheduledEventAgeGroupRepository _scheduledEventAgeGroupRepository;
+        private readonly IScheduledEventRegistrationHistoryRepository _scheduledEventRegistrationHistoryRepository;
+        private readonly IScheduledEventRegistrationRepository _scheduledEventRegistrationRepository;
         private readonly ISegmentService _segmentService;
         private readonly IUserService _userService;
 
         public LibraryProgramService(ILogger<LibraryProgramService> logger,
             IHttpContextAccessor httpContextAccessor,
+            IDateTimeProvider dateTimeProvider,
             IEventService eventService,
             ILanguageService languageService,
             ILibraryProgramRepository libraryProgramRepository,
             ILocationService locationService,
             IScheduledEventAgeGroupRepository scheduledEventAgeGroupRepository,
+            IScheduledEventRegistrationHistoryRepository scheduledEventRegistrationHistoryRepository,
+            IScheduledEventRegistrationRepository scheduledEventRegistrationRepository,
             ISegmentService segmentService,
             IUserService userService) : base(logger, httpContextAccessor)
         {
+            ArgumentNullException.ThrowIfNull(dateTimeProvider);
             ArgumentNullException.ThrowIfNull(eventService);
             ArgumentNullException.ThrowIfNull(languageService);
             ArgumentNullException.ThrowIfNull(libraryProgramRepository);
             ArgumentNullException.ThrowIfNull(locationService);
             ArgumentNullException.ThrowIfNull(scheduledEventAgeGroupRepository);
+            ArgumentNullException.ThrowIfNull(scheduledEventRegistrationHistoryRepository);
+            ArgumentNullException.ThrowIfNull(scheduledEventRegistrationRepository);
             ArgumentNullException.ThrowIfNull(segmentService);
 
+            _dateTimeProvider = dateTimeProvider;
             _eventService = eventService;
             _languageService = languageService;
             _libraryProgramRepository = libraryProgramRepository;
             _locationService = locationService;
             _scheduledEventAgeGroupRepository = scheduledEventAgeGroupRepository;
+            _scheduledEventRegistrationHistoryRepository = scheduledEventRegistrationHistoryRepository;
+            _scheduledEventRegistrationRepository = scheduledEventRegistrationRepository;
             _segmentService = segmentService;
             _userService = userService;
         }
@@ -114,11 +127,17 @@ namespace Ocuda.Ops.Service
             return program;
         }
 
-        public async Task<ImportResult> ImportAsync(int userId,
+        public async Task<int?> GetIdByEventIdAsync(int scheduledEventId)
+        {
+            return await _libraryProgramRepository.GetIdByEventIdAsync(scheduledEventId);
+        }
+
+        public async Task<ImportResult> ImportAsync(int importUserId,
             string filename,
             bool performImport,
             bool createEvents)
         {
+            var importedAt = _dateTimeProvider.Now;
             var result = new ImportResult();
 
             var filePath = Path.Combine(Path.GetTempPath(), filename);
@@ -180,7 +199,7 @@ namespace Ocuda.Ops.Service
                         CreatedBy = adminUserId,
                         DurationMinutes = importProgram.DurationMinutes,
                         HistoricId = importProgram.Id,
-                        ImportedBy = userId,
+                        ImportedBy = importUserId,
                         Instructor = importProgram.Instructor,
                         IsAllDay = importProgram.IsAllDay,
                         IsGuardianInfoRequired = importProgram.IsGuardianInfoRequired,
@@ -368,6 +387,33 @@ namespace Ocuda.Ops.Service
                                         oex.Message);
                                 }
                             }
+                            foreach (var registration in importProgram.Registrations)
+                            {
+                                var scheduledEventRegistration = new ScheduledEventRegistration
+                                {
+                                    Email = string.IsNullOrWhiteSpace(registration.Email)
+                                        ? null
+                                        : registration.Email.Trim(),
+                                    FirstName = registration.FirstName?.Trim(),
+                                    IsActive = true,
+                                    LastName = registration.LastName?.Trim(),
+                                    Phone = registration.Phone?.Trim(),
+                                    RegisteredAt = registration.RegisteredAt,
+                                    RegisteredByStaff = registration.StaffRegistered,
+                                    ScheduledEventId = scheduledEvent.Id
+                                };
+
+                                scheduledEventRegistration
+                                    = await _scheduledEventRegistrationRepository
+                                        .AddSaveAsync(scheduledEventRegistration);
+
+                                await _scheduledEventRegistrationHistoryRepository
+                                    .AddImportAsync(scheduledEventRegistration.Id,
+                                        registration.RegisteredAt,
+                                        importedAt,
+                                        registration.StaffRegistered ? adminUserId : null,
+                                        importUserId);
+                            }
                         }
                     }
 
@@ -396,18 +442,29 @@ namespace Ocuda.Ops.Service
             var languages = await _languageService.GetActiveAsync();
             var defaultLanguageId = languages.Single(_ => _.IsDefault).Id;
 
-            // TODO this could use some caching
-
             var programs = await _libraryProgramRepository.PaginateAsync(filter);
+
+            var registrationCounts = await _eventService.GetRegistrationCountAsync(programs.Data
+                .Where(_ => _.ScheduledEventId.HasValue && _.MaxPeople > 0)
+                .Select(_ => _.ScheduledEventId.Value));
+
             foreach (var program in programs.Data)
             {
                 var segment = await _segmentService
                     .GetBySegmentAndLanguageAsync(program.TitleSegmentId, defaultLanguageId);
+
                 if (segment != null)
                 {
                     program.Title = segment.Text;
                 }
+
                 program.OwnedByUser = await _userService.GetByIdAsync(program.OwnedByUserId);
+
+                if (program.ScheduledEventId.HasValue
+                    && registrationCounts.TryGetValue(program.ScheduledEventId.Value, out int value))
+                {
+                    program.RegistrationCount = value;
+                }
             }
             return programs;
         }

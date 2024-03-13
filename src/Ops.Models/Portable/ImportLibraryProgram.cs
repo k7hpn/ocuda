@@ -9,6 +9,7 @@ namespace Ocuda.Ops.Models.Portable
         public ImportLibraryProgram()
         {
             AgeGroups = new List<string>();
+            Registrations = new List<ImportLibraryRegistration>();
         }
 
         public IList<string> AgeGroups { get; set; }
@@ -47,9 +48,10 @@ namespace Ocuda.Ops.Models.Portable
         public int LocationId { get; set; }
 
         public int? MaxAgeMonths { get; set; }
-        public int? MaxPeople { get; set; }
+        public int MaxPeople { get; set; }
         public int? MaxWaitList { get; set; }
         public int? MinAgeMonths { get; set; }
+        public IList<ImportLibraryRegistration> Registrations { get; set; }
         public DateTime? SignUpEnd { get; set; }
 
         public DateTime? SignUpStart { get; set; }

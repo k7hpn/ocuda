@@ -6,7 +6,13 @@
         Programs <small>@Model.LibraryProgram.Title</small>
     </h1>
     <div class="pt-2">
-        <a class="btn btn-outline-dark"
+        <a class="btn btn-outline-primary"
+           asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Events.HomeController.Details))"
+           asp-area="@Ocuda.Ops.Controllers.Areas.Events.HomeController.Area"
+           asp-route-id="@Model.LibraryProgram.ScheduledEventId">
+            View Event
+        </a>
+        <a class="btn btn-outline-dark ms-2"
            asp-controller="@Ocuda.Ops.Controllers.Areas.Programs.HomeController.Name"
            asp-action="@(nameof(Ocuda.Ops.Controllers.Areas.Programs.HomeController.Index))">Back</a>
     </div>
@@ -93,5 +99,4 @@
             </form>
         </div>
     }
-</div>
 </div>
