@@ -1,17 +1,19 @@
-﻿using Ocuda.Promenade.Models.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using Ocuda.Promenade.Models.Entities;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace Ocuda.Ops.Service.Interfaces.Promenade.Services
 {
     public interface INavBannerService
     {
-        Task AddImageAsync(NavBannerImage image);
+        Task AddImageNoSaveAsync(NavBannerImage image);
 
-        Task AddLinksAndTextsAsync(List<NavBannerLink> links);
+        Task AddLinksAndTextsNoSaveAsync(List<NavBannerLink> links);
 
         Task AddLinkTextsNoSaveAsync(List<NavBannerLinkText> texts);
+
+        Task<NavBanner> CloneAsync(int navBannerId);
 
         Task<NavBanner> CreateNoSaveAsync(NavBanner navBanner);
 
@@ -27,15 +29,19 @@ namespace Ocuda.Ops.Service.Interfaces.Promenade.Services
 
         Task<int?> GetPageLayoutIdForNavBannerAsync(int id);
 
+        Task<int?> GetPageHeaderIdAsync(int navBannerId);
+
         Task<string> GetFullImageDirectoryPath(string languageName);
 
         string GetImageAssetPath(string fileName, string languageName);
 
         Task<string> GetUploadImageFilePathAsync(string languageName, string filename);
 
-        Task UpdateImageAsync(NavBannerImage image);
+        void UpdateImageNoSave(NavBannerImage image);
 
         void UpdateLinksNoSave(List<NavBannerLink> links);
+
+        void UpdateLinkTextNoSave(NavBannerLinkText linkText);
 
         Task SaveAsync();
     }
