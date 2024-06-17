@@ -46,8 +46,14 @@ namespace Ocuda.Ops.Data
         public DbSet<LocationGroup> LocationGroups { get; set; }
         public DbSet<LocationHours> LocationHours { get; set; }
         public DbSet<LocationHoursOverride> LocationHoursOverrides { get; set; }
+        public DbSet<LocationInteriorImageAltText> LocationInteriorImageAltTexts { get; set; }
+        public DbSet<LocationInteriorImage> LocationInteriorImages { get; set; }
         public DbSet<LocationProductMap> LocationProductMaps { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<NavBannerImage> NavBannerImages { get; set; }
+        public DbSet<NavBannerLink> NavBannerLinks { get; set; }
+        public DbSet<NavBannerLinkText> NavBannerLinkTexts { get; set; }
+        public DbSet<NavBanner> NavBanners { get; set; }
         public DbSet<Navigation> Navigations { get; set; }
         public DbSet<NavigationText> NavigationTexts { get; set; }
         public DbSet<PageHeader> PageHeaders { get; set; }
@@ -111,6 +117,8 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.CategoryId, _.EmediaId });
             modelBuilder.Entity<EmediaText>()
                 .HasKey(_ => new { _.EmediaId, _.LanguageId });
+            modelBuilder.Entity<LocationInteriorImageAltText>()
+                .HasKey(_ => new { _.LocationInteriorImageId, _.LanguageId });
             modelBuilder.Entity<ImageFeatureItemText>()
                 .HasKey(_ => new { _.LanguageId, _.ImageFeatureItemId });
             modelBuilder.Entity<LocationFeature>()
@@ -123,6 +131,10 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.DayOfWeek, _.LocationId });
             modelBuilder.Entity<NavigationText>()
                 .HasKey(_ => new { _.NavigationId, _.LanguageId });
+            modelBuilder.Entity<NavBannerImage>()
+                .HasKey(_ => new { _.NavBannerId, _.LanguageId });
+            modelBuilder.Entity<NavBannerLinkText>()
+                .HasKey(_ => new { _.NavBannerLinkId, _.LanguageId });
             modelBuilder.Entity<Page>()
                 .HasKey(_ => new { _.LanguageId, _.PageHeaderId });
             modelBuilder.Entity<PageLayoutText>()

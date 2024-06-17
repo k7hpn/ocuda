@@ -28,7 +28,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
     public class DecksController : BaseController<DecksController>
     {
         public static readonly int CardImageWidth = 666;
-        public static readonly int MaximumFileSizeBytes = 200 * 1024;
+        public static readonly int MaximumFileSizeBytes = 0; // disable this check
         private static readonly string[] ValidImageExtensions = new[] { ".jpg", ".png" };
 
         private readonly IDeckService _deckService;
@@ -115,7 +115,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             {
                 issues.Add($"Image type must be one of: {string.Join(", ", ValidImageExtensions)}");
             }
-            else if (viewModel.CardImage.Length > MaximumFileSizeBytes)
+            else if (MaximumFileSizeBytes > 0 && viewModel.CardImage.Length > MaximumFileSizeBytes)
             {
                 issues.Add($"Image must be smaller than {MaximumFileSizeBytes / 1024} KB");
             }
@@ -132,6 +132,15 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                 catch (ParameterException pex)
                 {
                     issues.Add($"Error optimizing uploaded image: {pex.Message}");
+                }
+                catch (OcudaConfigurationException)
+                { }
+
+                if (imageBytes == null)
+                {
+                    await using var memoryStream = new MemoryStream();
+                    await viewModel.CardImage.CopyToAsync(memoryStream);
+                    imageBytes = memoryStream.ToArray();
                 }
 
                 if (imageBytes != null)

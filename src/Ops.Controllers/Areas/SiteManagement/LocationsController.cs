@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using ImageOptimApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,11 +31,9 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
     public class LocationsController : BaseController<LocationsController>
     {
         private readonly string _apiKey;
-        private readonly string ImageFilePath = "images";
-        private readonly string LocationFilePath = "locations";
-        private readonly string MapFilePath = "maps";
         private readonly IFeatureService _featureService;
         private readonly IGroupService _groupService;
+        private readonly IImageService _imageService;
         private readonly ILanguageService _languageService;
         private readonly ILocationFeatureService _locationFeatureService;
         private readonly ILocationGroupService _locationGroupService;
@@ -45,7 +42,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
         private readonly ISegmentService _segmentService;
         private readonly ISocialCardService _socialCardService;
         private readonly IVolunteerFormService _volunteerFormService;
-        private readonly IImageService _imageService;
+        private readonly string MapFilePath = "maps";
 
         public LocationsController(ServiceFacades.Controller<LocationsController> context,
             IConfiguration config,
@@ -704,7 +701,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             else
             {
                 viewModel.LocationFeature = await _locationFeatureService
-                    .GetByIdsAsync(itemId, location.Id);
+                    .GetByFeatureIdLocationIdAsync(itemId, location.Id);
                 viewModel.Features = await _featureService.GetAllFeaturesAsync();
                 return PartialView("_EditFeaturesPartial", viewModel);
             }
@@ -930,34 +927,6 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             return RedirectToAction(nameof(Hours), new { locationStub = model.LocationStub });
         }
 
-        [HttpGet("[action]/{promMapPath}")]
-        public async Task<IActionResult> Image(string promMapPath)
-        {
-            var promBasePath = await _siteSettingService.GetSettingStringAsync(
-                    Models.Keys.SiteSetting.SiteManagement.PromenadePublicPath);
-
-            var filePath = HttpUtility.UrlDecode(promMapPath);
-
-            var mapImagePath = Path.Combine(promBasePath,
-                    ImageFilePath,
-                    LocationFilePath,
-                    MapFilePath,
-                    Path.GetFileName(filePath));
-
-            if (!System.IO.File.Exists(mapImagePath))
-            {
-                return StatusCode(404);
-            }
-            else
-            {
-                new FileExtensionContentTypeProvider()
-                    .TryGetContentType(mapImagePath, out string fileType);
-
-                return PhysicalFile(mapImagePath, fileType
-                    ?? System.Net.Mime.MediaTypeNames.Application.Octet);
-            }
-        }
-
         [HttpGet("")]
         [HttpGet("[action]")]
         public async Task<IActionResult> Index(int page = 1)
@@ -986,7 +955,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                 };
 
                 var volunteerFeature = await _featureService
-                    .GetFeatureByNameAsync("Volunteer");
+                    .GetFeatureBySlugAsync("volunteer");
                 if (volunteerFeature != null)
                 {
                     var forms = await _volunteerFormService.GetVolunteerFormsAsync();
@@ -1011,7 +980,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                         }
 
                         var locationFeature = await _locationFeatureService
-                            .GetByIdsAsync(volunteerFeature.Id, location.Id);
+                            .GetByFeatureIdLocationIdAsync(volunteerFeature.Id, location.Id);
                         var hasForms = formsViewModel.Any(_ => _.FormMappings.Any() && !_.IsDisabled);
                         var hasLocationFeature = locationFeature != null;
 
@@ -1034,7 +1003,7 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
                 viewModel.Groups = await _groupService
                     .GetGroupsByIdsAsync(viewModel.LocationGroups.Select(_ => _.GroupId));
                 viewModel.LocationFeatures = await _locationFeatureService
-                    .GetLocationFeaturesByLocationAsync(location);
+                    .GetLocationFeaturesByLocationAsync(location.Id);
                 viewModel.Features = await _featureService
                     .GetFeaturesByIdsAsync(viewModel.LocationFeatures.Select(_ => _.FeatureId));
 
@@ -1080,49 +1049,6 @@ namespace Ocuda.Ops.Controllers.Areas.SiteManagement
             {
                 ShowAlertDanger($"Unable to find Location {locationStub}: {ex.Message}");
                 return RedirectToAction(nameof(Index));
-            }
-        }
-
-        [HttpGet("{locationStub}/[action]")]
-        public async Task<IActionResult> MapImageGenerator(string locationStub)
-        {
-            try
-            {
-                var location = await _locationService
-                        .GetLocationByStubAsync(locationStub);
-                location.IsNewLocation = false;
-
-                var viewModel = new LocationMapViewModel
-                {
-                    Location = location,
-                    LocationGroups = await _locationGroupService
-                        .GetLocationGroupsByLocationAsync(location),
-                    MapApiKey = _apiKey
-                };
-                return View(viewModel);
-            }
-            catch (OcudaException ex)
-            {
-                ShowAlertDanger($"Unable to find Location {locationStub}: {ex.Message}");
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        [HttpPost("[action]/{locationCode}")]
-        public async Task<IActionResult> UpdateMapImage([FromBody] string imageBase64, string locationCode)
-        {
-            try
-            {
-                var (extension, imageBytes) = _imageService.ConvertFromBase64(imageBase64);
-                var fileName = locationCode + extension;
-
-                await _locationService.UploadLocationMapAsync(imageBytes, fileName);
-                return new JsonResult("Image updated successfully!");
-            }
-            catch (ParameterException pex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                        pex.Message);
             }
         }
 

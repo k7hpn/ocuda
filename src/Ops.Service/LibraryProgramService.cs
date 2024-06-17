@@ -17,6 +17,7 @@ using Ocuda.Ops.Service.Interfaces.Ops.Services;
 using Ocuda.Ops.Service.Interfaces.Promenade.Repositories;
 using Ocuda.Ops.Service.Interfaces.Promenade.Services;
 using Ocuda.Promenade.Models.Entities;
+using Ocuda.Utility;
 using Ocuda.Utility.Abstract;
 using Ocuda.Utility.Exceptions;
 using Ocuda.Utility.Extensions;
@@ -153,12 +154,12 @@ namespace Ocuda.Ops.Service
                 var programs = await JsonSerializer
                     .DeserializeAsync<PortableList<ImportLibraryProgram>>(stream);
 
-                if (programs.Items == null || programs.Items.Count == 0)
+                if (programs.Items?.Any() != true)
                 {
                     throw new OcudaException("No programs found in import file.");
                 }
 
-                _logger.LogInformation("Found {ProgramsCount} programs", programs.Items.Count);
+                _logger.LogInformation("Found {ProgramsCount} programs", programs.Items.Count());
 
                 var adminUserId = await _userService.GetSysadminIdAsync();
 
@@ -168,7 +169,7 @@ namespace Ocuda.Ops.Service
 
                 var languageList = await _languageService.GetActiveAsync();
 
-                var tenPercent = programs.Items.Count / 10;
+                var tenPercent = programs.Items.Count() / 10;
 
                 var userCache = new Dictionary<string, int>();
 
@@ -418,17 +419,17 @@ namespace Ocuda.Ops.Service
                     }
 
                     if (result.TotalRecords % (tenPercent + 1) == 0
-                        || result.TotalRecords == programs.Items.Count)
+                        || result.TotalRecords == programs.Items.Count())
                     {
                         var timePer = result.Stopwatch.Elapsed.TotalSeconds / result.TotalRecords;
-                        var remainingRecords = programs.Items.Count - result.TotalRecords;
+                        var remainingRecords = programs.Items.Count() - result.TotalRecords;
 
                         _logger.LogInformation(StatusFormatted,
                             result.TotalRecords,
-                            programs.Items.Count,
-                            result.TotalRecords * 100 / programs.Items.Count,
+                            programs.Items.Count(),
+                            result.TotalRecords * 100 / programs.Items.Count(),
                             result.Stopwatch.Elapsed,
-                            TimeSpan.FromSeconds(timePer * programs.Items.Count),
+                            TimeSpan.FromSeconds(timePer * programs.Items.Count()),
                             TimeSpan.FromSeconds(timePer * remainingRecords));
                     }
                 }

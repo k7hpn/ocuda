@@ -154,6 +154,11 @@ namespace Ocuda.Ops.Service
         {
             ArgumentNullException.ThrowIfNull(formFile);
 
+            if (string.IsNullOrEmpty(_client?.Username))
+            {
+                throw new OcudaConfigurationException($"Unable to optimize image, missing configuration: {nameof(Utility.Keys.Configuration.OpsImageOptimizerUsername)}");
+            }
+
             OptimizedImageResult optimized;
 
             string filePath = Path.Combine(Path.GetTempPath(),
@@ -191,6 +196,11 @@ namespace Ocuda.Ops.Service
 
         private async Task<OptimizedImageResult> OptimizeAsync(Uri imageUri, string imagePath)
         {
+            if (string.IsNullOrEmpty(_client?.Username))
+            {
+                throw new OcudaConfigurationException($"Unable to optimize image, missing configuration: {nameof(Utility.Keys.Configuration.OpsImageOptimizerUsername)}");
+            }
+
             if (Format == Format.Auto)
             {
                 Format = Format.Jpeg;
