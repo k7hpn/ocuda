@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Ocuda.Ops.Models.Entities;
 
 namespace Ocuda.Promenade.Models.Entities
 {
@@ -20,8 +18,5 @@ namespace Ocuda.Promenade.Models.Entities
         public Guid ScheduledEventRegistrationId { get; set; }
 
         public int? StaffId { get; set; }
-
-        [NotMapped]
-        public User StaffUser { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ocuda.Ops.Controllers.Abstract;
@@ -94,12 +95,25 @@ namespace Ocuda.Ops.Controllers.Areas.Events
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> Registration(Guid id)
         {
-            return View(new RegistrationViewModel
+            var viewModel = new RegistrationViewModel
             {
                 ScheduledEventRegistration = await _eventService.GetEventRegistrationAsync(id),
                 ScheduledEventRegistrationHistories = await _eventService
                     .GetRegistrationHistoryAsync(id)
-            });
+            };
+
+            var relevantUserIds = viewModel
+                .ScheduledEventRegistrationHistories
+                .Where(_ => _.StaffId.HasValue)
+                .Select(_ => _.StaffId.Value)
+                .Distinct();
+
+            foreach (var userId in relevantUserIds)
+            {
+                viewModel.RelevantUsers.Add(userId, await _userService.GetByIdAsync(userId));
+            }
+
+            return View(viewModel);
         }
 
         [HttpGet("[action]/{id}")]

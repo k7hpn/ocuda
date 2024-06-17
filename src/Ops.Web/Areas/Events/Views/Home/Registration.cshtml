@@ -50,19 +50,20 @@
             {
                 @foreach (var historyRecord in Model.ScheduledEventRegistrationHistories)
                 {
+                    var user = Model.GetUser(historyRecord.StaffId);
                     <tr>
                         <td>@historyRecord.CreatedAt</td>
                         <td>
-                            @if (historyRecord.StaffUser?.IsSysadmin == false && historyRecord.StaffUser?.IsDeleted == false)
+                            @if(user?.IsSysadmin == false && user?.IsDeleted == false)
                             {
                                 <a asp-controller="@Ocuda.Ops.Controllers.ProfileController.Name"
                                    asp-action="@nameof(Ocuda.Ops.Controllers.ProfileController.Index)"
-                                   asp-route-id="@historyRecord.StaffUser.Username"
-                                   target="_blank">@historyRecord.StaffUser.Name</a>
+                                   asp-route-id="@user.Username"
+                                   target="_blank">@user.Name</a>
                             }
                             else
                             {
-                                @historyRecord.StaffUser?.Name
+                                @(user?.Name ?? "Unknown")
                             }
                         </td>
                         <td>@historyRecord.Notes</td>

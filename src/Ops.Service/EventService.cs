@@ -26,7 +26,6 @@ namespace Ocuda.Ops.Service
         private readonly IScheduledEventLocationRepository _scheduledEventLocationRepository;
         private readonly IScheduledEventRepository _scheduledEventRepository;
         private readonly ISegmentService _segmentService;
-        private readonly IUserService _userService;
 
         public EventService(ILogger<EventService> logger,
             IHttpContextAccessor httpContextAccessor,
@@ -36,8 +35,7 @@ namespace Ocuda.Ops.Service
             IScheduledEventRegistrationHistoryRepository scheduledEventRegistrationHistoryRepository,
             IScheduledEventRegistrationRepository scheduledEventRegistrationRepository,
             IScheduledEventRepository scheduledEventRepository,
-            ISegmentService segmentService,
-            IUserService userService) : base(logger, httpContextAccessor)
+            ISegmentService segmentService) : base(logger, httpContextAccessor)
         {
             ArgumentNullException.ThrowIfNull(ageGroupRepository);
             ArgumentNullException.ThrowIfNull(languageService);
@@ -46,7 +44,6 @@ namespace Ocuda.Ops.Service
             ArgumentNullException.ThrowIfNull(scheduledEventRegistrationRepository);
             ArgumentNullException.ThrowIfNull(scheduledEventRepository);
             ArgumentNullException.ThrowIfNull(segmentService);
-            ArgumentNullException.ThrowIfNull(userService);
 
             _ageGroupRepository = ageGroupRepository;
             _languageService = languageService;
@@ -55,7 +52,6 @@ namespace Ocuda.Ops.Service
             _scheduledEventLocationRepository = scheduledEventLocationRepository;
             _scheduledEventRepository = scheduledEventRepository;
             _segmentService = segmentService;
-            _userService = userService;
         }
 
         public async Task<AgeGroup> AddSaveAgeGroupAsync(AgeGroup ageGroup)
@@ -175,15 +171,8 @@ namespace Ocuda.Ops.Service
         public async Task<IEnumerable<ScheduledEventRegistrationHistory>>
                     GetRegistrationHistoryAsync(Guid scheduledEventRegistrationId)
         {
-            var histories = await _registrationHistoryRepository
+            return await _registrationHistoryRepository
                 .GetByRegistrationIdAsync(scheduledEventRegistrationId);
-
-            foreach (var history in histories.Where(_ => _.StaffId.HasValue))
-            {
-                history.StaffUser = await _userService.GetByIdAsync(history.StaffId.Value);
-            }
-
-            return histories;
         }
 
         public async Task<bool> IsSlugInUseAsync(string slug)

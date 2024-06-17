@@ -28,7 +28,6 @@
                 <div class="col-12 col-md-8 d-flex flex-column flex-sm-row gap-1">
                     <div class="col-12 col-sm-6 bg-white px-0 py-4 px-sm-4">
                         <h2>@Model.Location.Name</h2>
-
                         @if (Model.Location.CurrentStatus != null)
                         {
                             <div class="todays-status">
@@ -274,49 +273,48 @@
                     </div>
                 }
             </div>
-    @if (Model.ScheduledEvents?.Count() > 0)
-    {
-        <h2>Upcoming Events</h2>
-        <div class="row">
-            @foreach (var scheduledEvent in Model.ScheduledEvents)
+            @if (Model.ScheduledEvents?.Count() > 0)
             {
-                <div class="col-12 col-md-4 d-flex mb-4">
-                    <div class="card flex-fill w-100">
-                        <div class="card-header">
-                            <div class="card-title h5 pt-1">
-                                <a asp-action="@nameof(HomeController.EventDetails)"
-                                   asp-controller="@HomeController.Name"
-                                   asp-route-slug="@scheduledEvent.Slug"
-                                   asp-route-locationSlug="@Model.Location.Stub">
-                                    @scheduledEvent.Title
-                                </a>
+                <h2>Upcoming Events</h2>
+                <div class="row">
+                    @foreach (var scheduledEvent in Model.ScheduledEvents)
+                    {
+                        <div class="col-12 col-md-4 d-flex mb-4">
+                            <div class="card flex-fill w-100">
+                                <div class="card-header">
+                                    <div class="card-title h5 pt-1">
+                                        <a asp-action="@nameof(HomeController.EventDetails)"
+                                           asp-controller="@HomeController.Name"
+                                           asp-route-slug="@scheduledEvent.Slug"
+                                           asp-route-locationSlug="@Model.Location.Stub">
+                                            @scheduledEvent.Title
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    @scheduledEvent.Description
+                                </div>
+                                @if (scheduledEvent.MaxPeople > 0)
+                                {
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            Registered event:
+                                            @scheduledEvent.Registrations
+                                            of
+                                            @scheduledEvent.MaxPeople
+                                            slots taken
+                                        </li>
+                                    </ul>
+                                }
+                                <div class="card-footer d-flex">
+                                    <div class="flex-grow-1">@scheduledEvent.StartDate.ToString("g")</div>
+                                    <div>@scheduledEvent.DurationText</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            @scheduledEvent.Description
-                        </div>
-                        @if (scheduledEvent.MaxPeople > 0)
-                        {
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    Registered event:
-                                    @scheduledEvent.Registrations
-                                    of
-                                    @scheduledEvent.MaxPeople
-                                    slots taken
-                                </li>
-                            </ul>
-                        }
-                        <div class="card-footer d-flex">
-                            <div class="flex-grow-1">@scheduledEvent.StartDate.ToString("g")</div>
-                            <div>@scheduledEvent.DurationText</div>
-                        </div>
-                    </div>
+                    }
                 </div>
             }
-        </div>
-    }
-
             @if (Model.Location.InteriorImages.Count > 0)
             {
                 <div class="col-12 col-md-8" style="background-color: white;">
@@ -360,9 +358,9 @@
         <div class="row g-0 col-lg-10 offset-lg-1 border-4 border-bottom">
             <div class="mx-auto" style="max-width: 740px;">
                 <div class="row">
-                    @if(!string.IsNullOrEmpty(Model.SocialLink) && 
-                        !string.IsNullOrEmpty(Model.SocialName) &&
-                        !string.IsNullOrEmpty(Model.SocialIcon))
+                    @if (!string.IsNullOrEmpty(Model.SocialLink) &&
+                    !string.IsNullOrEmpty(Model.SocialName) &&
+                    !string.IsNullOrEmpty(Model.SocialIcon))
                     {
                         <div class="col-12 col-sm-6 mb-4 location-feature-link">
                             <a href="@Model.SocialLink"

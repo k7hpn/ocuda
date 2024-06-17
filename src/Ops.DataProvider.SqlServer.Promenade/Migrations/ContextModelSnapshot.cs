@@ -38,7 +38,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys", (string)null);
+                    b.ToTable("DataProtectionKeys");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Card", b =>
@@ -59,7 +59,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Cards", (string)null);
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CardDetail", b =>
@@ -97,7 +97,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("CardDetails", (string)null);
+                    b.ToTable("CardDetails");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Carousel", b =>
@@ -110,7 +110,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carousels", (string)null);
+                    b.ToTable("Carousels");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselButton", b =>
@@ -141,7 +141,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LabelId");
 
-                    b.ToTable("CarouselButtons", (string)null);
+                    b.ToTable("CarouselButtons");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselButtonLabel", b =>
@@ -159,7 +159,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CarouselButtonLabels", (string)null);
+                    b.ToTable("CarouselButtonLabels");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselButtonLabelText", b =>
@@ -179,7 +179,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("CarouselButtonLabelTexts", (string)null);
+                    b.ToTable("CarouselButtonLabelTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselItem", b =>
@@ -200,7 +200,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("CarouselId");
 
-                    b.ToTable("CarouselItems", (string)null);
+                    b.ToTable("CarouselItems");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselItemText", b =>
@@ -233,7 +233,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("CarouselItemTexts", (string)null);
+                    b.ToTable("CarouselItemTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselTemplate", b =>
@@ -263,7 +263,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CarouselTemplates", (string)null);
+                    b.ToTable("CarouselTemplates");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CarouselText", b =>
@@ -287,7 +287,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("CarouselTexts", (string)null);
+                    b.ToTable("CarouselTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Category", b =>
@@ -310,7 +310,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.CategoryText", b =>
@@ -330,7 +330,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("CategoryTexts", (string)null);
+                    b.ToTable("CategoryTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Deck", b =>
@@ -348,7 +348,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Decks", (string)null);
+                    b.ToTable("Decks");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Emedia", b =>
@@ -376,7 +376,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Emedia", (string)null);
+                    b.ToTable("Emedia");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.EmediaCategory", b =>
@@ -391,7 +391,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("EmediaId");
 
-                    b.ToTable("EmediaCategories", (string)null);
+                    b.ToTable("EmediaCategories");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.EmediaGroup", b =>
@@ -417,7 +417,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SegmentId");
 
-                    b.ToTable("EmediaGroups", (string)null);
+                    b.ToTable("EmediaGroups");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.EmediaText", b =>
@@ -441,7 +441,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("EmediaTexts", (string)null);
+                    b.ToTable("EmediaTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ExternalResource", b =>
@@ -470,7 +470,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExternalResources", (string)null);
+                    b.ToTable("ExternalResources");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Feature", b =>
@@ -513,7 +513,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Features", (string)null);
+                    b.ToTable("Features");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Group", b =>
@@ -550,7 +550,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ImageFeature", b =>
@@ -567,7 +567,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageFeatures", (string)null);
+                    b.ToTable("ImageFeatures");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ImageFeatureItem", b =>
@@ -599,7 +599,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("ImageFeatureId");
 
-                    b.ToTable("ImageFeatureItems", (string)null);
+                    b.ToTable("ImageFeatureItems");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ImageFeatureItemText", b =>
@@ -628,7 +628,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("ImageFeatureItemId");
 
-                    b.ToTable("ImageFeatureItemTexts", (string)null);
+                    b.ToTable("ImageFeatureItemTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ImageFeatureTemplate", b =>
@@ -658,7 +658,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageFeatureTemplates", (string)null);
+                    b.ToTable("ImageFeatureTemplates");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Language", b =>
@@ -685,7 +685,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages", (string)null);
+                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Location", b =>
@@ -849,7 +849,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SocialCardId");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationFeature", b =>
@@ -874,7 +874,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationFeatures", (string)null);
+                    b.ToTable("LocationFeatures");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationForm", b =>
@@ -889,7 +889,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("FormId");
 
-                    b.ToTable("LocationForms", (string)null);
+                    b.ToTable("LocationForms");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationGroup", b =>
@@ -910,7 +910,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationGroups", (string)null);
+                    b.ToTable("LocationGroups");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationHours", b =>
@@ -934,7 +934,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationHours", (string)null);
+                    b.ToTable("LocationHours");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationHoursOverride", b =>
@@ -969,7 +969,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationHoursOverrides", (string)null);
+                    b.ToTable("LocationHoursOverrides");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.LocationInteriorImage", b =>
@@ -1040,7 +1040,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("LocationProductMaps", (string)null);
+                    b.ToTable("LocationProductMaps");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.NavBanner", b =>
@@ -1169,7 +1169,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("NavigationId");
 
-                    b.ToTable("Navigations", (string)null);
+                    b.ToTable("Navigations");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.NavigationText", b =>
@@ -1196,7 +1196,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("NavigationTexts", (string)null);
+                    b.ToTable("NavigationTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Page", b =>
@@ -1227,7 +1227,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SocialCardId");
 
-                    b.ToTable("Pages", (string)null);
+                    b.ToTable("Pages");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PageHeader", b =>
@@ -1276,7 +1276,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LayoutWebslideTemplateId");
 
-                    b.ToTable("PageHeaders", (string)null);
+                    b.ToTable("PageHeaders");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PageItem", b =>
@@ -1332,7 +1332,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("WebslideId");
 
-                    b.ToTable("PageItems", (string)null);
+                    b.ToTable("PageItems");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PageLayout", b =>
@@ -1366,7 +1366,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SocialCardId");
 
-                    b.ToTable("PageLayouts", (string)null);
+                    b.ToTable("PageLayouts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PageLayoutText", b =>
@@ -1389,7 +1389,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("PageLayoutTexts", (string)null);
+                    b.ToTable("PageLayoutTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Podcast", b =>
@@ -1479,7 +1479,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Podcasts", (string)null);
+                    b.ToTable("Podcasts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PodcastDirectory", b =>
@@ -1497,7 +1497,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PodcastDirectories", (string)null);
+                    b.ToTable("PodcastDirectories");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PodcastDirectoryInfo", b =>
@@ -1516,7 +1516,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("PodcastDirectoryId");
 
-                    b.ToTable("PodcastDirectoryInfos", (string)null);
+                    b.ToTable("PodcastDirectoryInfos");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.PodcastItem", b =>
@@ -1609,7 +1609,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("PodcastId");
 
-                    b.ToTable("PodcastItems", (string)null);
+                    b.ToTable("PodcastItems");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Product", b =>
@@ -1656,7 +1656,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ProductLocationInventory", b =>
@@ -1695,7 +1695,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("ProductLocationInventories", (string)null);
+                    b.ToTable("ProductLocationInventories");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ScheduleRequest", b =>
@@ -1760,7 +1760,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("ScheduleRequestTelephoneId");
 
-                    b.ToTable("ScheduleRequest", (string)null);
+                    b.ToTable("ScheduleRequest");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ScheduleRequestLimit", b =>
@@ -1776,7 +1776,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("DayOfWeek", "Hour");
 
-                    b.ToTable("ScheduleRequestLimits", (string)null);
+                    b.ToTable("ScheduleRequestLimits");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ScheduleRequestSubject", b =>
@@ -1818,7 +1818,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ScheduleRequestSubject", (string)null);
+                    b.ToTable("ScheduleRequestSubject");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ScheduleRequestSubjectText", b =>
@@ -1836,7 +1836,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("ScheduleRequestSubjectId", "LanguageId");
 
-                    b.ToTable("ScheduleRequestSubjectTexts", (string)null);
+                    b.ToTable("ScheduleRequestSubjectTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.ScheduleRequestTelephone", b =>
@@ -1854,7 +1854,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ScheduleRequestTelephone", (string)null);
+                    b.ToTable("ScheduleRequestTelephone");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Segment", b =>
@@ -1885,7 +1885,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SegmentWrapId");
 
-                    b.ToTable("Segments", (string)null);
+                    b.ToTable("Segments");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.SegmentText", b =>
@@ -1907,7 +1907,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("SegmentId");
 
-                    b.ToTable("SegmentTexts", (string)null);
+                    b.ToTable("SegmentTexts");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.SegmentWrap", b =>
@@ -1939,7 +1939,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SegmentWrap", (string)null);
+                    b.ToTable("SegmentWrap");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.SiteSetting", b =>
@@ -1971,7 +1971,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SiteSettings", (string)null);
+                    b.ToTable("SiteSettings");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.SocialCard", b =>
@@ -2003,7 +2003,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SocialCards", (string)null);
+                    b.ToTable("SocialCards");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.UrlRedirect", b =>
@@ -2034,7 +2034,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UrlRedirects", (string)null);
+                    b.ToTable("UrlRedirects");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.UrlRedirectAccess", b =>
@@ -2055,7 +2055,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("UrlRedirectId");
 
-                    b.ToTable("UrlRedirectAccesses", (string)null);
+                    b.ToTable("UrlRedirectAccesses");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.VolunteerForm", b =>
@@ -2088,7 +2088,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("ThanksPageHeaderId");
 
-                    b.ToTable("VolunteerForms", (string)null);
+                    b.ToTable("VolunteerForms");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.VolunteerFormSubmission", b =>
@@ -2154,7 +2154,7 @@ namespace Ocuda.Ops.DataProvider.SqlServer.Promenade.Migrations
 
                     b.HasIndex("VolunteerFormId");
 
-                    b.ToTable("VolunteerFormSubmissions", (string)null);
+                    b.ToTable("VolunteerFormSubmissions");
                 });
 
             modelBuilder.Entity("Ocuda.Promenade.Models.Entities.Card", b =>
