@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Ocuda.Promenade.Controllers.Abstract
 {
@@ -34,8 +38,32 @@ namespace Ocuda.Promenade.Controllers.Abstract
         [HttpPost("{stub?}")]
         public async Task<IActionResult> PagePreview(string stub)
         {
-            return await ReturnPageAsync(stub,
-                HttpContext.Request.Form["PreviewId"].FirstOrDefault());
+            if (string.IsNullOrEmpty(stub))
+            {
+                return NotFound();
+            }
+            if (HttpContext.Request.ContentType == "application/x-www-form-urlencoded")
+            {
+                return await ReturnPageAsync(stub,
+                    HttpContext.Request.Form["PreviewId"].FirstOrDefault());
+            }
+            else
+            {
+                if (!HttpContext.Request.Body.CanSeek)
+                {
+                    HttpContext.Request.EnableBuffering();
+                }
+                HttpContext.Request.Body.Position = 0;
+                using var reader = new StreamReader(HttpContext.Request.Body, Encoding.UTF8);
+                var body = await reader.ReadToEndAsync();
+                HttpContext.Request.Body.Position = 0;
+
+                _logger.LogWarning("Bad preview submission to {Slug} as {ContentType}: {Data}",
+                    stub,
+                    HttpContext.Request.ContentType,
+                    body);
+                return NotFound();
+            }
         }
     }
 }
