@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Ocuda.Ops.Controllers.Abstract;
 using Ocuda.Ops.Controllers.Areas.Incident.ViewModel;
 using Ocuda.Ops.Controllers.Filters;
@@ -110,6 +111,10 @@ namespace Ocuda.Ops.Controllers.Areas.Incident
             {
                 ModelState.AddModelError(nameof(viewModel.IncidentDate), "Please choose a date in the last 2 weeks");
             }
+            else if (viewModel.IncidentDate > _dateTimeProvider.Now)
+            {
+                ModelState.AddModelError(nameof(viewModel.IncidentDate), "Please choose a date not in the future.");
+            }
             else if (viewModel.IncidentDate.HasValue && viewModel.IncidentTime.HasValue)
             {
                 viewModel.Incident.IncidentAt = viewModel.IncidentDate.Value
@@ -139,13 +144,30 @@ namespace Ocuda.Ops.Controllers.Areas.Incident
                 var baseUri = BaseUriBuilder;
                 baseUri.Path = Url.Action(nameof(Details), new { id = 0 });
 
-                var incidentId = await _incidentService.AddAsync(viewModel.Incident,
-                    affectedStaff.Union(witnessStaff).ToList(),
-                    affectedPeople.Union(witnessPeople).ToList(),
-                    baseUri.Uri);
+                int? incidentId = null;
 
-                ShowAlertSuccess($"Incident {incidentId} created.");
-                return RedirectToAction(nameof(Details), new { id = incidentId });
+                try
+                {
+                    incidentId = await _incidentService.AddAsync(viewModel.Incident,
+                        affectedStaff.Union(witnessStaff).ToList(),
+                        affectedPeople.Union(witnessPeople).ToList(),
+                        baseUri.Uri);
+                }
+                catch (OcudaException oex)
+                {
+                    _logger.LogCritical(oex, "Issue creating incident report.");
+                }
+
+                if (incidentId.HasValue)
+                {
+                    ShowAlertSuccess($"Incident {incidentId} created.");
+                    return RedirectToAction(nameof(Details), new { id = incidentId });
+                }
+                else
+                {
+                    ShowAlertWarning("There was an issue creating your incident. Please verify it was created correctly.");
+                    return RedirectToAction(nameof(Index));
+                }
             }
             else
             {
