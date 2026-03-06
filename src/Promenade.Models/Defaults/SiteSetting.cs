@@ -6,134 +6,8 @@ namespace Ocuda.Promenade.Models.Defaults
 {
     public static class SiteSettings
     {
-        public static IEnumerable<SiteSetting> Get { get; } = new[]
-        {
-            #region CardRenewal
-
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Accepted counties for card renewal addresses, comma delimited",
-                Id = Keys.SiteSetting.CardRenewal.AcceptedCounties,
-                Name = "Accepted counties",
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Customer codes ids to check for becoming 18 years old, comma delimited",
-                Id = Keys.SiteSetting.CardRenewal.AgeCheckCustomerCodes,
-                Name = "Age check customer codes",
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Category = nameof (Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show to age check customers who have become 18",
-                Id = Keys.SiteSetting.CardRenewal.AgeCheckSegment,
-                Name = "Age check segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Number of days before a cards expiration that it's eligible for online renewal",
-                Id = Keys.SiteSetting.CardRenewal.ExpirationCutoffDays,
-                Name = "Card renewal expiration cutoff days",
-                Type= SiteSettingType.Int,
-                Value = "-1"
-            },
-            
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show on the card renewal home page",
-                Id = Keys.SiteSetting.CardRenewal.HomeSegment,
-                Name = "Card renewal segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Juvenile customer code ids, comma delimited",
-                Id = Keys.SiteSetting.CardRenewal.JuvenileCustomerCodes,
-                Name = "Juvenile customer codes",
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show on the juvenile page",
-                Id = Keys.SiteSetting.CardRenewal.JuvenileSegment,
-                Name = "Juvenile segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show on the verify address page when there's no valid addresses",
-                Id = Keys.SiteSetting.CardRenewal.NoAddressSegment,
-                Name = "No address segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Nonresident customer code ids, comma delimited",
-                Id = Keys.SiteSetting.CardRenewal.NonresidentCustomerCodes,
-                Name = "Nonresident customer codes",
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show when a customer can't renew their card due to being a nonresident",
-                Id = Keys.SiteSetting.CardRenewal.NonresidentSegment,
-                Name = "Nonresident segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show when api settings aren't configured",
-                Id = Keys.SiteSetting.CardRenewal.NotConfiguredSegment,
-                Name = "Not configured segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Staff customer code ids, comma delimited",
-                Id = Keys.SiteSetting.CardRenewal.StaffCustomerCodes,
-                Name = "Staff customer codes",
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show on the submitted page",
-                Id = Keys.SiteSetting.CardRenewal.SubmittedSegment,
-                Name = "Submitted segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-            new SiteSetting
-            {
-                Category = nameof(Keys.SiteSetting.CardRenewal),
-                Description = "Segment to show on the verify address page",
-                Id = Keys.SiteSetting.CardRenewal.VerifyAddressSegment,
-                Name = "Verify address segment",
-                Type = SiteSettingType.Int,
-                Value = "-1"
-            },
-
-            #endregion CardRenewal
+        public static IEnumerable<SiteSetting> Get { get; } =
+        [
 
             #region Contact
 
@@ -155,6 +29,146 @@ namespace Ocuda.Promenade.Models.Defaults
             },
 
             #endregion Contact
+
+            #region Network
+
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.Network),
+                Description = "Networks considered local, comma-separated netblocks",
+                Id= Keys.SiteSetting.Network.LocalNetworks,
+                Name="Local Networks",
+                Type=SiteSettingType.String,
+                Value="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            },
+
+            #endregion Network
+
+            #region RenewCard
+
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Accepted counties for card renewal addresses, comma delimited",
+                Id = Keys.SiteSetting.RenewCard.AcceptedCounties,
+                Name = "Accepted counties",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Customer codes ids to check for becoming 18 years old, comma delimited",
+                Id = Keys.SiteSetting.RenewCard.AgeCheckCustomerCodes,
+                Name = "Age check customer codes",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Category = nameof (Keys.SiteSetting.RenewCard),
+                Description = "Segment to show to age check customers who have become 18",
+                Id = Keys.SiteSetting.RenewCard.AgeCheckSegment,
+                Name = "Age check segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Number of days before a cards expiration that it's eligible for online renewal",
+                Id = Keys.SiteSetting.RenewCard.ExpirationCutoffDays,
+                Name = "Card renewal expiration cutoff days",
+                Type= SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show on the card renewal home page",
+                Id = Keys.SiteSetting.RenewCard.HomeSegment,
+                Name = "Home segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Juvenile customer code ids, comma delimited",
+                Id = Keys.SiteSetting.RenewCard.JuvenileCustomerCodes,
+                Name = "Juvenile customer codes",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show on the juvenile page",
+                Id = Keys.SiteSetting.RenewCard.JuvenileSegment,
+                Name = "Juvenile segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show on the verify address page when there's no valid addresses",
+                Id = Keys.SiteSetting.RenewCard.NoAddressSegment,
+                Name = "No address segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Nonresident customer code ids, comma delimited",
+                Id = Keys.SiteSetting.RenewCard.NonresidentCustomerCodes,
+                Name = "Nonresident customer codes",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show when a customer can't renew their card due to being a nonresident",
+                Id = Keys.SiteSetting.RenewCard.NonresidentSegment,
+                Name = "Nonresident segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show when api settings aren't configured",
+                Id = Keys.SiteSetting.RenewCard.NotConfiguredSegment,
+                Name = "Not configured segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Staff customer code ids, comma delimited",
+                Id = Keys.SiteSetting.RenewCard.StaffCustomerCodes,
+                Name = "Staff customer codes",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show on the submitted page",
+                Id = Keys.SiteSetting.RenewCard.SubmittedSegment,
+                Name = "Submitted segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+            new SiteSetting
+            {
+                Category = nameof(Keys.SiteSetting.RenewCard),
+                Description = "Segment to show on the verify address page",
+                Id = Keys.SiteSetting.RenewCard.VerifyAddressSegment,
+                Name = "Verify address segment",
+                Type = SiteSettingType.Int,
+                Value = "-1"
+            },
+
+            #endregion RenewCard
 
             #region EmployeeSignup
             new SiteSetting
@@ -382,7 +396,7 @@ namespace Ocuda.Promenade.Models.Defaults
                 Name = "Services at all link",
                 Type = SiteSettingType.StringNullable
             },
-            
+
             #endregion Site
 
             #region Social
@@ -446,6 +460,7 @@ namespace Ocuda.Promenade.Models.Defaults
             },
 
             #endregion Social
-        };
+
+        ];
     }
 }

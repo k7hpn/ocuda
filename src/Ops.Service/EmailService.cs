@@ -58,8 +58,15 @@ namespace Ocuda.Ops.Service
 
         public async Task<Utility.Email.Details> GetDetailsAsync(int emailSetupId,
              string languageName,
+             IDictionary<string, string> tags)
+        {
+            return await GetDetailsAsync(emailSetupId, languageName, tags, null);
+        }
+
+        public async Task<Utility.Email.Details> GetDetailsAsync(int emailSetupId,
+             string languageName,
              IDictionary<string, string> tags,
-             string overrideText = null)
+             string overrideText)
         {
             var emailSetupText = await GetEmailSetupAsync(emailSetupId, languageName)
                 ?? throw new OcudaEmailException($"Unable to find email setup {emailSetupId} in the requested or default language.");
@@ -81,7 +88,7 @@ namespace Ocuda.Ops.Service
             {
                 try
                 {
-                    emailSetupText.BodyHtml = CommonMarkConverter.Convert(overrideText 
+                    emailSetupText.BodyHtml = CommonMarkConverter.Convert(overrideText
                         ?? emailSetupText.BodyText);
                 }
                 catch (CommonMarkException cmex)
@@ -119,7 +126,7 @@ namespace Ocuda.Ops.Service
             return emailSetups.ToDictionary(_ => _.Id, _ => _.Description);
         }
 
-        public async Task<EmailSetupText> GetSetupTextByLanguageAsync(int emailSetupId, 
+        public async Task<EmailSetupText> GetSetupTextByLanguageAsync(int emailSetupId,
             string languageName)
         {
             return await _emailSetupTextRepository.GetByIdLanguageAsync(emailSetupId, languageName);
