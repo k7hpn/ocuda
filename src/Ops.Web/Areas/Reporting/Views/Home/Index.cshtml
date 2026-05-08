@@ -1,0 +1,38 @@
+﻿@model Ocuda.Ops.Controllers.Areas.Reporting.ViewModel.IndexViewModel
+
+<partial name="_ReportingPartial" model="Model" />
+
+<div class="row">
+    @if (!(Model.Reports?.Count() > 0))
+    {
+        <div class="col-12 col-md-6 offset-md-3">
+            <div class="alert alert-info">No reports are defined.</div>
+        </div>
+    }
+    else
+    {
+        @foreach (var report in Model.Reports)
+        {
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <a asp-action="@nameof(HomeController.View)"
+                           asp-route-reportId="@report.Id">@report.Name</a>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@report.Description</p>
+                    </div>
+                    @if (report.Importable)
+                    {
+                        <div class="card-footer d-flex justify-content-end">
+                            <a asp-action="@nameof(HomeController.Import)"
+                               asp-route-reportId="@report.Id"
+                               class="btn btn-sm btn-info">Import Data</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+</div>

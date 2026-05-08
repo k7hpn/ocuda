@@ -649,6 +649,7 @@ namespace Ocuda.Ops.Web
             services.AddScoped<IPublicFilesService, PublicFilesService>();
             services.AddScoped<IRenewCardRequestService, RenewCardRequestService>();
             services.AddScoped<IRenewCardService, RenewCardService>();
+            services.AddScoped<IReportingService, ReportingService>();
             services.AddScoped<IRosterService, RosterService>();
             services.AddScoped<ISamlService, SamlService>();
             services.AddScoped<IScheduleNotificationService, ScheduleNotificationService>();
