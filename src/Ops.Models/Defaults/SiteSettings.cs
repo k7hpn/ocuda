@@ -9,6 +9,29 @@ namespace Ocuda.Ops.Models.Defaults
         public static IEnumerable<SiteSetting> Get { get; } =
         [
 
+            #region Address Verification
+
+            new SiteSetting
+            {
+                Id = Keys.SiteSetting.AddressVerification.Link,
+                Name = "Link to address verificaiton information",
+                Description = "A link to information about address verification",
+                Category = nameof(Keys.SiteSetting.AddressVerification),
+                Value = "",
+                Type = SiteSettingType.StringNullable
+            },
+            new SiteSetting
+            {
+                Id = Keys.SiteSetting.AddressVerification.LinkText,
+                Name = "Text for the address verification information link",
+                Description = "A text to hyperlink to the address verification link",
+                Category = nameof(Keys.SiteSetting.AddressVerification),
+                Value = "",
+                Type = SiteSettingType.StringNullable
+            },
+
+            #endregion Address Verification
+
             #region RenewCard
 
             new SiteSetting
@@ -19,24 +42,6 @@ namespace Ocuda.Ops.Models.Defaults
                 Category = nameof(Keys.SiteSetting.RenewCard),
                 Value = string.Empty,
                 Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Id = Keys.SiteSetting.RenewCard.AddressLookupUrl,
-                Name = "Address lookup url",
-                Description = "Address lookup url with scheme, host and path",
-                Category = nameof(Keys.SiteSetting.RenewCard),
-                Value = string.Empty,
-                Type = SiteSettingType.StringNullable
-            },
-            new SiteSetting
-            {
-                Id = Keys.SiteSetting.RenewCard.AssessorLookupUrl,
-                Name = "Assessor lookup url",
-                Description = "Assessor lookup with scheme, host and path",
-                Category = nameof(Keys.SiteSetting.RenewCard),
-                Value = string.Empty,
-                Type= SiteSettingType.StringNullable
             },
             new SiteSetting
             {

@@ -2,6 +2,12 @@
 {
     namespace SiteSetting
     {
+        public static class AddressVerification
+        {
+            public static readonly string Link = $"{nameof(AddressVerification)}.{nameof(Link)}";
+            public static readonly string LinkText = $"{nameof(AddressVerification)}.{nameof(LinkText)}";
+        }
+
         public static class Carousel
         {
             public static readonly string AltTextEnglish = "Carousel.AltTextEnglish";
@@ -59,8 +65,6 @@
         public static class RenewCard
         {
             public static readonly string AcceptedCounty = "RenewCard.AcceptedCounty";
-            public static readonly string AddressLookupUrl = "RenewCard.AddressLookupUrl";
-            public static readonly string AssessorLookupUrl = "RenewCard.AssessorLookupUrl";
             public static readonly string ChargesLimit = "RenewCard.ChargesLimit";
             public static readonly string IgnoredBlockIds = "RenewCard.IgnoredBlockIds";
             public static readonly string LeapPatronUrl = "RenewCard.LeapPatronUrl";
