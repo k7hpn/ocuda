@@ -1,6 +1,6 @@
 ﻿@model Ocuda.Ops.Controllers.Areas.Reporting.ViewModel.ReportingViewModelBase
 
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between mb-2">
     <h1>
         @Model.Heading
         @if (!string.IsNullOrEmpty(Model.SecondaryHeading))
@@ -8,7 +8,7 @@
             <small class="text-muted">@Model.SecondaryHeading</small>
         }
     </h1>
-    <div class="pt-2">
+    <div class="pt-2 d-print-none">
         @if (!Model.IsIndex)
         {
             <a class="btn btn-outline-dark ms-2"

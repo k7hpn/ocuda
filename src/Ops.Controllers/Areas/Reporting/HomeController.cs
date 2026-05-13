@@ -9,7 +9,7 @@ using Ocuda.Ops.Models.Definitions;
 using Ocuda.Ops.Models.Keys;
 using Ocuda.Ops.Service.Filters;
 using Ocuda.Ops.Service.Interfaces.Ops.Services;
-using Ocuda.Ops.Service.Interfaces.Promenade.Services;
+using Serilog.Context;
 
 namespace Ocuda.Ops.Controllers.Areas.Reporting
 {
@@ -49,10 +49,16 @@ namespace Ocuda.Ops.Controllers.Areas.Reporting
 
             // TODO REPORT: see if data exists for the selected date, if so prompt or overwrite?
 
-            using var stream = viewModel.DataFile.OpenReadStream();
-            await reportingService.ProcessImportAsync(report.Id, viewModel.DataDate, stream);
+            await using var stream = viewModel.DataFile.OpenReadStream();
 
-            return RedirectToAction(nameof(Index));
+            using (LogContext.PushProperty("ImportFilename", viewModel.DataFile.FileName))
+            {
+                var importResult = await reportingService.ProcessImportAsync(report.Id,
+                    viewModel.DataDate,
+                    viewModel.DataFile.FileName,
+                    stream);
+                return RedirectToAction(nameof(Results), new { id = importResult });
+            }
         }
 
         [HttpGet("[action]/{reportId}")]
@@ -115,15 +121,32 @@ namespace Ocuda.Ops.Controllers.Areas.Reporting
             return View(viewModel);
         }
 
-        [Route("[action]/{reportId}")]
-        public async Task<IActionResult> View(string reportId)
+        [Route("[action]/{reportId}/{year}/{month}")]
+        public async Task<IActionResult> Results(string reportId, int year, int month)
         {
-            // TODO REPORT set up viewing of reports
-            return View();
+            var reportType = ReportDefinitions.Definitions.SingleOrDefault(_ => _.Id == reportId);
+
+            if (reportType == null) { return StatusCode(404); }
+
+            var results = await reportingService.GetResultsAsync(reportType.Id, year, month);
+
+            if (results == null) { return StatusCode(404); }
+
+            var viewModel = new ResultsViewModel
+            {
+                Results = results,
+                Heading = reportType.Name,
+                SecondaryHeading = $"{results.Month}/{results.Year}"
+            };
+
+            SetPageTitle(viewModel.Heading);
+            return View(viewModel);
         }
 
         private async Task<bool> HasImportPermissionAsync(string reportId)
         {
+            // TODO REPORT add permissions based on report the way we do with pages
+            // TODO REPORT add permission check for if user can view report(s)
             return await HasAppPermissionAsync(permissionGroupService,
                 ApplicationPermission.ImportAllReports)
                 || IsSiteManager();

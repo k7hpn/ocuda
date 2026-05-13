@@ -8,13 +8,9 @@ using Category = Ocuda.Ops.Models.Entities.Category;
 
 namespace Ocuda.Ops.Data
 {
-    public abstract class OpsContext
-        : Utility.Data.DbContextBase, IMigratableContext, IDataProtectionKeyContext
+    public abstract class OpsContext(DbContextOptions options)
+        : Utility.Data.DbContextBase(options), IMigratableContext, IDataProtectionKeyContext
     {
-        protected OpsContext(DbContextOptions options) : base(options)
-        {
-        }
-
         public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ClaimGroup> ClaimGroups { get; set; }
@@ -61,6 +57,11 @@ namespace Ocuda.Ops.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<RenewCardResponse> RenewCardResponses { get; set; }
         public DbSet<RenewCardResult> RenewCardResults { get; set; }
+        public DbSet<ReportingImportDatum> ReportingInputData { get; set; }
+        public DbSet<ReportingImportDetails> ReportingInputDetails { get; set; }
+        public DbSet<ReportingImportHeader> ReportingInputHeaders { get; set; }
+        public DbSet<ReportingLocation> ReportingLocations { get; set; }
+        public DbSet<ReportingLocationSet> ReportingLocationSets { get; set; }
         public DbSet<RosterDetail> RosterDetails { get; set; }
         public DbSet<RosterDivision> RosterDivisions { get; set; }
         public DbSet<RosterHeader> RosterHeaders { get; set; }
@@ -119,6 +120,10 @@ namespace Ocuda.Ops.Data
                 .HasKey(_ => new { _.PermissionGroupId, _.SectionId });
             modelBuilder.Entity<PostCategory>()
                 .HasKey(_ => new { _.PostId, _.CategoryId });
+            modelBuilder.Entity<ReportingImportDatum>()
+                .HasKey(_ => new { _.ReportingImportHeaderId, _.LocationId });
+            modelBuilder.Entity<ReportingLocation>()
+                .HasKey(_ => new { _.LocationId, _.ReportingLocationSetId });
             modelBuilder.Entity<SectionCategory>()
                 .HasKey(_ => new { _.SectionId, _.CategoryId });
             modelBuilder.Entity<TitleClassMapping>()

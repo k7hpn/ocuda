@@ -458,6 +458,16 @@ namespace Ocuda.Ops.Web
                 Data.Ops.RenewCardResponseRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IRenewCardResultRepository,
                 Data.Ops.RenewCardResultRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IReportingImportDatumRepository,
+                Data.Ops.ReportingImportDatumRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IReportingImportDetailsRepository,
+                Data.Ops.ReportingImportDetailsRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IReportingImportHeaderRepository,
+                Data.Ops.ReportingImportHeaderRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IReportingLocationRepository,
+                Data.Ops.ReportingLocationRepository>();
+            services.AddScoped<Service.Interfaces.Ops.Repositories.IReportingLocationSetRepository,
+                Data.Ops.ReportingLocationSetRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IRosterDetailRepository,
                 Data.Ops.RosterDetailRepository>();
             services.AddScoped<Service.Interfaces.Ops.Repositories.IRosterDivisionRepository,

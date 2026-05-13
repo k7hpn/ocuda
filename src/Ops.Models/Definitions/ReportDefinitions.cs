@@ -12,13 +12,14 @@ namespace Ocuda.Ops.Models.Definitions
         [
             // TODO REPORT fix the description of this report
             new() {
-                Description = "Lorem ipsum",
+                Delimiter = "\t",
+                Description = "Overall circulations by patron library cards",
                 Id = ReportDefinitionId.HooplaCheckouts,
                 ImportFileTypes = [MediaTypeNames.Text.Csv],
-                Name = "Hoopla Checkouts",
+                Name = "Hoopla Circulations",
                 Period = ReportDefinitionPeriod.Monthly,
-                SkipFirstColumn = ["", "Grand Total"],
-                ReportType = ReportTypeElectronicResources
+                ReportType = ReportTypeElectronicResources,
+                SkipFirstColumn = ["", "Grand Total"]
             }
         ];
 

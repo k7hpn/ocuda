@@ -4,6 +4,16 @@ namespace Ocuda.Ops.Models.Definitions.Models
 {
     public class ReportDefinition
     {
+        public ReportDefinition()
+        {
+            Delimiter = ",";
+        }
+
+        /// <summary>
+        /// The column delimiter for the report, defaults to a comma for a CSV report
+        /// </summary>
+        public string Delimiter { get; set; }
+
         /// <summary>
         /// Description of the report to show to users
         /// </summary>
